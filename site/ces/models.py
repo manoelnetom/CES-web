@@ -36,13 +36,13 @@ class Usuario(models.Model):
 
 class Movimentacao(models.Model):
     id= models.AutoField(primary_key=True, blank=False, null=False)
-    retirada = models.DateTimeField(null=True)
-    devolucao = models.DateTimeField(null=True)
+    retirada = models.DateTimeField(null=True, blank=True)
+    devolucao = models.DateTimeField(null=True, blank=True)
     objeto_id = models.ForeignKey(Objeto)
     usuario_id = models.ForeignKey(Usuario)
 
     def __str__(self):
-        return self.id
+        return str("{0} para {1}").format(self.objeto_id, self.usuario_id)
 
 class Permissao_Objeto_x_Usuario(models.Model):
     id= models.AutoField(primary_key=True, blank=False, null=False)

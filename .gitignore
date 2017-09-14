@@ -96,3 +96,9 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+
+# sqlite database
+
+site/db.sqlite3
+
