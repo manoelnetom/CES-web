@@ -36,8 +36,8 @@ class Usuario(models.Model):
 
 class Movimentacao(models.Model):
     id= models.AutoField(primary_key=True, blank=False, null=False)
-    retirada = models.DateTimeField(null=True, default=datetime.now)
-    devolucao = models.DateTimeField(null=True, default=datetime.now)
+    retirada = models.DateTimeField(null=True)
+    devolucao = models.DateTimeField(null=True)
     objeto_id = models.ForeignKey(Objeto)
     usuario_id = models.ForeignKey(Usuario)
 
