@@ -72,7 +72,7 @@ class Permissao_Objeto_x_Usuario(models.Model):
     usuario_id = models.ForeignKey(Usuario)
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
 
 class Permissao_Objeto_x_PerfilUsuario(models.Model):
@@ -81,7 +81,7 @@ class Permissao_Objeto_x_PerfilUsuario(models.Model):
     perfilUsuario_id = models.ForeignKey(PerfilUsuario)
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
 
 class AdminWeb(models.Model):
@@ -90,7 +90,7 @@ class AdminWeb(models.Model):
     usuario_id = models.ForeignKey(Usuario)
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
     class Meta:
         verbose_name = "Admin web"
