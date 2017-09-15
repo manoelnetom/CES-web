@@ -7,7 +7,6 @@ from ces import models
 from datetime import datetime
 
 
-# Create your views here.
 class MovimentacaoAbertoServiceView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 

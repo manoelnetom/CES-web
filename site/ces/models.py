@@ -2,12 +2,14 @@ from django.db import models
 from django.utils import timezone
 from datetime import datetime
 
+
 class TipoObjeto(models.Model):
     id = models.AutoField(primary_key=True, blank=False, null=False)
     nome = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):
         return self.nome
+
 
 class Objeto(models.Model):
     id = models.AutoField(primary_key=True, blank=False, null=False)
@@ -17,12 +19,14 @@ class Objeto(models.Model):
     def __str__(self):
         return self.nome
 
+
 class PerfilUsuario(models.Model):
     id = models.AutoField(primary_key=True, blank=False, null=False)
     nome = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):
         return self.nome
+
 
 class Usuario(models.Model):
     id= models.AutoField(primary_key=True, blank=False, null=False)
@@ -34,6 +38,7 @@ class Usuario(models.Model):
     def __str__(self):
         return self.nome
 
+
 class Movimentacao(models.Model):
     id= models.AutoField(primary_key=True, blank=False, null=False)
     retirada = models.DateTimeField(null=True, blank=True)
@@ -44,6 +49,7 @@ class Movimentacao(models.Model):
     def __str__(self):
         return str("{0} para {1}").format(self.objeto_id, self.usuario_id)
 
+
 class Permissao_Objeto_x_Usuario(models.Model):
     id= models.AutoField(primary_key=True, blank=False, null=False)
     objeto_id = models.ForeignKey(Objeto)
@@ -52,6 +58,7 @@ class Permissao_Objeto_x_Usuario(models.Model):
     def __str__(self):
         return self.id
 
+
 class Permissao_Objeto_x_PerfilUsuario(models.Model):
     id= models.AutoField(primary_key=True, blank=False, null=False)
     tipoObjeto_id = models.ForeignKey(TipoObjeto)
@@ -59,6 +66,7 @@ class Permissao_Objeto_x_PerfilUsuario(models.Model):
 
     def __str__(self):
         return self.id
+
 
 class AdminWeb(models.Model):
     id= models.AutoField(primary_key=True, blank=False, null=False)
