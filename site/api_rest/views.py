@@ -9,7 +9,6 @@ from datetime import datetime
 
 # Create your views here.
 class MovimentacaoAbertoServiceView(APIView):
-
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, user_id, format=None):
@@ -19,8 +18,16 @@ class MovimentacaoAbertoServiceView(APIView):
         return Response(serializer.data)
 
 
-class DevolverObjetoServiceView(APIView):
+class ObjetoServiceView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
 
+    def get(self, request, format=None):
+        objetos =  models.Objeto.objects.all()
+        serializer = serializers.ObjetoSerializer(objetos, many=True)
+        return Response(serializer.data)
+
+
+class DevolverObjetoServiceView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, format=None):
