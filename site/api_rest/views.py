@@ -7,22 +7,32 @@ from ces import models
 from datetime import datetime
 
 
-class MovimentacaoAbertoServiceView(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
-
-    def get(self, request, user_id, format=None):
-        user = models.Usuario.objects.get(id=user_id)
-        movimentacoes =  models.Movimentacao.objects.filter(usuario_id__id=user.id, devolucao=None)
-        serializer = serializers.MovimentacaoSerializer(movimentacoes, many=True)
-        return Response(serializer.data)
-
-
 class ObjetoServiceView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, format=None):
         objetos =  models.Objeto.objects.all()
         serializer = serializers.ObjetoSerializer(objetos, many=True)
+        return Response(serializer.data)
+
+
+class ObjetoDisponivelServiceView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, user_id, format=None):
+        # Queryset:
+        # Verificar se o objeto tem alguma movimentação sem devolucao
+        # Verificar se o usuário tem permissão para exibir tal objeto
+        return None
+
+
+class MovimentacaoAbertaServiceView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, user_id, format=None):
+        user = models.Usuario.objects.get(id=user_id)
+        movimentacoes =  models.Movimentacao.objects.filter(usuario_id__id=user.id, devolucao=None)
+        serializer = serializers.MovimentacaoSerializer(movimentacoes, many=True)
         return Response(serializer.data)
 
 
