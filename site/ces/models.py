@@ -10,6 +10,10 @@ class TipoObjeto(models.Model):
     def __str__(self):
         return self.nome
 
+    class Meta:
+        verbose_name = "Tipo de objeto"
+        verbose_name_plural = "Tipos de objeto"
+
 
 class Objeto(models.Model):
     id = models.AutoField(primary_key=True, blank=False, null=False)
@@ -27,6 +31,10 @@ class PerfilUsuario(models.Model):
     def __str__(self):
         return self.nome
 
+    class Meta:
+        verbose_name = "Perfil de usuário"
+        verbose_name_plural = "Perfis de usuário"
+
 
 class Usuario(models.Model):
     id= models.AutoField(primary_key=True, blank=False, null=False)
@@ -38,6 +46,10 @@ class Usuario(models.Model):
     def __str__(self):
         return self.nome
 
+    class Meta:
+        verbose_name = "Usuário"
+        verbose_name_plural = "Usuários"
+
 
 class Movimentacao(models.Model):
     id= models.AutoField(primary_key=True, blank=False, null=False)
@@ -48,6 +60,10 @@ class Movimentacao(models.Model):
 
     def __str__(self):
         return str("{0} para {1}").format(self.objeto_id, self.usuario_id)
+
+    class Meta:
+        verbose_name = "Movimentação"
+        verbose_name_plural = "Movimentações"
 
 
 class Permissao_Objeto_x_Usuario(models.Model):
@@ -75,3 +91,7 @@ class AdminWeb(models.Model):
 
     def __str__(self):
         return self.id
+
+    class Meta:
+        verbose_name = "Admin web"
+        verbose_name_plural = "Admins web"
