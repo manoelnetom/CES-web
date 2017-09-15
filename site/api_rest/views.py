@@ -19,11 +19,11 @@ class ObjetoServiceView(APIView):
 class ObjetoDisponivelServiceView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
-    def get(self, request, user_id, format=None):
+    def get(self, request, format=None):
         # Queryset:
         # Verificar se o objeto tem alguma movimentação sem devolucao
         # Verificar se o usuário tem permissão para exibir tal objeto
-        return None
+        return Response(200)
 
 
 class MovimentacaoAbertaServiceView(APIView):
@@ -34,6 +34,20 @@ class MovimentacaoAbertaServiceView(APIView):
         movimentacoes =  models.Movimentacao.objects.filter(usuario_id__id=user.id, devolucao=None)
         serializer = serializers.MovimentacaoSerializer(movimentacoes, many=True)
         return Response(serializer.data)
+
+
+class EmprestarObjetoServiceView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, format=None):
+        objeto_id =  request.data.get('objeto_id')
+        objeto = models.Objeto.objects.get(id=objeto_id)
+        usuario_id = request.data.get('usuario_id')
+        usuario = models.Usuario.objects.get(id=usuario_id)
+
+        movimentacao = models.Movimentacao.objects.create(retirada = datetime.now(),devolucao=None,
+                                                              objeto_id=objeto, usuario_id=usuario)
+        return Response(200)
 
 
 class DevolverObjetoServiceView(APIView):
