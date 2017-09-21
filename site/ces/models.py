@@ -17,6 +17,7 @@ class TipoObjeto(models.Model):
 
 class Objeto(models.Model):
     id = models.AutoField(primary_key=True, blank=False, null=False)
+    codigo = models.CharField(max_length=50, blank=True, null=True)
     nome = models.CharField(max_length=50, blank=True, null=True)
     tipoObjeto_id = models.ForeignKey(TipoObjeto)
 
