@@ -5,7 +5,7 @@ from datetime import datetime
 
 class TipoObjeto(models.Model):
     id = models.AutoField(primary_key=True, blank=False, null=False)
-    nome = models.CharField(max_length=50, blank=True, null=True)
+    nome = models.CharField(unique=True,max_length=50, blank=True, null=True)
 
     def __str__(self):
         return self.nome
