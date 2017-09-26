@@ -25,21 +25,26 @@ SECRET_KEY = '@zln2vj_wbvj=5&0csa@3$u9q3%-&1^&76yz)w51g%n3jz#ari'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '.codeanyapp.com', '*', '127.0.0.1']
 
 
 # Application definition
 
 INSTALLED_APPS = (
+    'jet.dashboard', # always before django.contrib.admin
+    'jet', # always before django.contrib.admin
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'ces',
-     'rest_framework',
+    'rest_framework',
+    'ces'
 )
+#Theme JET Setting
+JET_SIDE_MENU_COMPACT = True
+JET_DEFAULT_THEME = 'default'
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -57,7 +62,7 @@ ROOT_URLCONF = 'cessite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -69,6 +74,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
