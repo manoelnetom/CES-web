@@ -5,7 +5,7 @@ from datetime import datetime
 
 class TipoObjeto(models.Model):
     id = models.AutoField(primary_key=True, blank=False, null=False)
-    nome = models.CharField(max_length=50, blank=False, null=True)
+    nome = models.CharField(max_length=50, blank=False, null=False)
 
     def __str__(self):
         return self.nome
@@ -17,8 +17,8 @@ class TipoObjeto(models.Model):
 
 class Objeto(models.Model):
     id = models.AutoField(primary_key=True, blank=False, null=False)
-    codigo = models.CharField(unique=True, max_length=50, blank=False, null=True)
-    nome = models.CharField(unique=True, max_length=50, blank=False, null=True)
+    codigo = models.CharField(unique=True, max_length=50, blank=False, null=False)
+    nome = models.CharField(unique=True, max_length=50, blank=False, null=False)
     tipoObjeto_id = models.ForeignKey(TipoObjeto)
 
     def __str__(self):
@@ -27,7 +27,7 @@ class Objeto(models.Model):
 
 class PerfilUsuario(models.Model):
     id = models.AutoField(primary_key=True, blank=False, null=False)
-    nome = models.CharField(max_length=50, blank=True, null=True)
+    nome = models.CharField(max_length=50, blank=True, null=False)
 
     def __str__(self):
         return self.nome
