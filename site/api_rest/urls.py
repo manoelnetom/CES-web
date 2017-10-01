@@ -13,4 +13,5 @@ urlpatterns = [
     url(r'^movimentacoes_usuario/(?P<user_id>\d+)', views.MovimentacaoUsuarioServiceView.as_view(), name='movimentacoes_usuario'),
     url(r'^objetos_disponiveis_usuario/(?P<user_id>\d+)', views.ObjetoDisponivelUsuarioServiceView.as_view(), name='objetos_disponiveis_usuario'),
     url(r'^movimentacoes_abertas_usuario/(?P<user_id>\d+)', views.MovimentacaoAbertaUsuarioServiceView.as_view(), name='movimentacoes_abertas_usuario'),
+    url(r'^detalhe_movimentacao/(?P<movimentacao_id>\d+)', views.DetalheMovimentacaoServiceView.as_view(), name='detalhe_movimentacao'),
 ]

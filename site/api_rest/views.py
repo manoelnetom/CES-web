@@ -70,6 +70,15 @@ class MovimentacaoUsuarioServiceView(APIView):
         return Response(serializer.data)
 
 
+class DetalheMovimentacaoServiceView(APIView):
+    # permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, movimentacao_id, format=None):
+        movimentacao =  models.Movimentacao.objects.get(id=movimentacao_id)
+        serializer = serializers.MovimentacaoSerializer(movimentacao)
+        return Response(serializer.data)
+
+
 class MovimentacaoAbertaUsuarioServiceView(APIView):
     # permission_classes = (permissions.IsAuthenticated,)
 
