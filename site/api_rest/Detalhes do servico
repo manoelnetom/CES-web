@@ -1,0 +1,78 @@
+
+Observações:
+- Não é necessária autenticação já que não temos tela de login funcionando com o Emile;
+- Ainda não estão funcionando as permissões (perfis de usuário e objetos que eles podem pegar);
+- Emprestar, devolve e transferir ainda não estão funcionando.
+
+-----------------------------------------------------
+Campos retornados:
+
+- Objeto:   id,
+            nome,
+            tipoObjeto_id { id, nome }
+
+- Movimentacao: id,
+                retirada,
+                devolucao,
+                objeto_id { id, nome, tipoObjeto_id (id, nome) }
+                usuario_id { id, nome, email, senha, perfilUsuario_id (id, nome) }
+
+-----------------------------------------------------                
+Serviços disponíveis:
+
+- Listar todos os objetos
+url = exibir_objetos/
+Método GET
+Retorna uma lista de objetos
+
+- Listar um objeto
+url = exibir_objeto/X
+Substituir o "X" pelo id do objeto
+Método GET
+Retorna um objeto
+
+- Listar todos os objetos disponíveis (não emprestados)
+url = objetos_disponiveis
+Método GET
+Retorna uma lista de objetos
+
+- Listar todos os objetos disponíveis para um usuário (não empresados)
+url = objetos_disponiveis_usuario/X
+Substituir o "X" pelo id do usuário
+Método GET
+Retorna uma lista de objetos
+
+- Listar todos os objetos emprestados para um usuário (histórico)
+url = movimentacoes_usuario/X
+Substituir o "X" pelo id do usuário
+Método GET
+Retorna uma lista de movimentacoes
+
+- Listar todos os objetos emprestados e não devolvidos para um usuário
+url = movimentacoes_abertas_usuario/X
+Substituir o "X" pelo id do usuário
+Método GET
+Retona uma lista de movimentacoes
+
+- Listar uma movimentacao
+url = detalhe_movimentacao/X
+Substituir o "X" pelo id da movimentacao
+Método GET
+Retorna uma movimentacao
+
+-----------------------------------------------------
+
+- Emprestar um objeto
+url = emprestar_objeto/
+Método POST
+Passar os dados em formato JSON (objeto_id, user_id)
+
+- Devolver um objeto
+url = devolver_objeto/
+Método POST
+Passar os dados em formato JSON (movimentacao_id)
+
+- Transferir um objeto
+url = transferir_objeto/
+Método POST
+Passar os dados em formato JSON (movimentacao_id, objeto_id, user_id, novo_usuario_id)
