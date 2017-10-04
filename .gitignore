@@ -97,8 +97,10 @@ ENV/
 # mypy
 .mypy_cache/
 
-migrations/
-# sqlite database
 
+migrations/
+
+
+# sqlite database
 site/db.sqlite3
 
