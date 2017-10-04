@@ -97,7 +97,7 @@ ENV/
 # mypy
 .mypy_cache/
 
-
+migratios/
 # sqlite database
 
 site/db.sqlite3
