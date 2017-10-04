@@ -79,27 +79,29 @@ class Funcionario(Usuario):
     class Meta:
         verbose_name = "Funcionario"
         verbose_name_plural = "Funcionarios"
-
-class Grupo(models.Model):
-    id = models.AutoField(primary_key=True, blank=False, null=False)
-    usuarios = models.ManyToMany(Usuario)
-    permissoes = models.ManyToMany(Permissao)
-    descricao = models.CharField(max_length=50, unique=True, blank=False,)
-    data_criacao = models.DateTimeField(default=timezone.now)
-    data_alteracao = models.DateTimeField(default=timezone.now)
-    criado_por = models.ForeignKey('auth.User')
-    alterado_por = models.ForeignKey('auth.User')
-
+        
 class Permissao(models.Model):
     id  = models.AutoField(primary_key=True, blank=False, null=False)
-    descricao= models.CharField(max_length=50, unique=True, blank=False,)
+    descricao = models.CharField(max_length=50, unique=True, blank=False)
 
     def __str__(self):
         return self.id
 
     class Meta:
         verbose_name = "Permissão"
-        verbose_name_plural = "Permissões"
+        verbose_name_plural = "Permissões"       
+
+class Grupo(models.Model):
+    id = models.AutoField(primary_key=True, blank=False, null=False)
+    usuarios = models.ManyToManyField(Usuario)
+    permissoes = models.ManyToManyField(Permissao)
+    descricao = models.CharField(max_length=50, unique=True, blank=False)
+    data_criacao = models.DateTimeField(default=timezone.now)
+    data_alteracao = models.DateTimeField(default=timezone.now)
+    criado_por = models.ForeignKey('auth.User', related_name= 'criado')
+    alterado_por = models.ForeignKey('auth.User' , related_name= 'alerado')
+
+
 
 
 class Movimentacao(models.Model):
