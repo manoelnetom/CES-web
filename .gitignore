@@ -6,6 +6,12 @@ __pycache__/
 # C extensions
 *.so
 
+# IDE
+.project
+.settings/
+.directory
+.pydevproject
+
 # Distribution / packaging
 .Python
 env/
@@ -97,10 +103,10 @@ ENV/
 # mypy
 .mypy_cache/
 
-
-migrations/
-
+/migrations/*
+site/*/migrations/
 
 # sqlite database
+
 site/db.sqlite3
 
