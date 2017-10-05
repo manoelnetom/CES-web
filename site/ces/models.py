@@ -49,7 +49,7 @@ class Departamento(models.Model):
     descricao= models.CharField(max_length=50, unique=True, blank=False)
 
     def __str__(self):
-        return self.id
+        return self.descricao
 
     class Meta:
         verbose_name = "Departamento"
@@ -85,7 +85,7 @@ class Permissao(models.Model):
     descricao = models.CharField(max_length=50, unique=True, blank=False)
 
     def __str__(self):
-        return self.id
+        return self.descricao
 
     class Meta:
         verbose_name = "Permissão"
@@ -112,7 +112,7 @@ class Movimentacao(models.Model):
     usuario_id = models.ForeignKey(Usuario)
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
     class Meta:
         verbose_name = "Movimentação"
