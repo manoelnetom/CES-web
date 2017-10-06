@@ -12,6 +12,7 @@ admin.site.register(Departamento)
 admin.site.register(Setor)
 admin.site.register(Grupo)
 admin.site.register(Permissao)
+admin.site.register(PermissaoGrupo)
 
 
 
