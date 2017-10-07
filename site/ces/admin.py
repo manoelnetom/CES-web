@@ -23,7 +23,7 @@ class UsuarioAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('matricula', 'password1', 'password2',)}
+            'fields': ('matricula', 'nome', 'sobrenome', 'password1', 'password2',)}
         ),
     )
     
@@ -49,7 +49,7 @@ class FuncionarioAdmin(UsuarioAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('matricula', 'password1', 'password2', 'setor',)}
+            'fields': ('matricula', 'nome', 'sobrenome', 'password1', 'password2', 'setor',)}
         ),
     )
     
@@ -74,7 +74,7 @@ class ProfessorAdmin(UsuarioAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('matricula', 'password1', 'password2', 'departamento',)}
+            'fields': ('matricula', 'nome', 'sobrenome', 'password1', 'password2','departamento',)}
         ),
     )
     

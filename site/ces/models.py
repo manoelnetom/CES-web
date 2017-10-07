@@ -65,9 +65,9 @@ class UsuarioManager(BaseUserManager):
 class Usuario(AbstractBaseUser, PermissionsMixin):
     matricula = models.CharField(max_length=16, unique=True)
     email = models.EmailField(max_length=30, unique=True)
-    nome = models.CharField(max_length=30)
-    sobrenome = models.CharField(max_length=30)
-    telefone = models.CharField(max_length=250, blank=False, null=False)
+    nome = models.CharField(max_length=30,blank=False, null=False)
+    sobrenome = models.CharField(max_length=30,blank=False, null=False)
+    telefone = models.CharField(max_length=250,)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
@@ -78,7 +78,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'matricula'
-    REQUIRED_FIELDS = ['email', 'nome', 'sobrenome']
+    REQUIRED_FIELDS = ['nome', 'sobrenome']
     
     class Meta:
         verbose_name = "Usuário"
