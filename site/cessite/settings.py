@@ -44,6 +44,9 @@ INSTALLED_APPS = (
 JET_SIDE_MENU_COMPACT = True
 JET_DEFAULT_THEME = 'default'
 
+#Auth
+AUTH_USER_MODEL = "ces.Usuario"
+
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
