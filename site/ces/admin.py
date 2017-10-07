@@ -12,7 +12,7 @@ class UsuarioAdmin(BaseUserAdmin):
     add_form = UsuarioNovoForm
 
     fieldsets = (
-        ('Informações Pessoais', {'fields': ('matricula','nome', 'sobrenome', 'telefone', 'email',)}),
+        ('Informações Pessoais', {'fields': ('matricula', 'nome', 'sobrenome', 'telefone', 'email',)}),
         ('Permissões', {'fields': ('is_admin', 'user_permissions',)}),
         ('Senha', {'fields': ('password',)}),
     )
@@ -31,14 +31,14 @@ class UsuarioAdmin(BaseUserAdmin):
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
     list_display = ('nome', 'sobrenome', 'telefone', 'email',)
-    search_fields = ('matricula','nome', 'sobrenome',)
+    search_fields = ('matricula', 'nome', 'sobrenome',)
     list_filter = ()
     ordering = ('nome',)
 
 @admin.register(Funcionario)
 class FuncionarioAdmin(UsuarioAdmin):
     fieldsets = (
-        ('Informações Pessoais', {'fields': ('matricula','nome', 'sobrenome', 'telefone', 'email', 'setor',)}),
+        ('Informações Pessoais', {'fields': ('matricula', 'nome', 'sobrenome', 'telefone', 'email', 'setor',)}),
         ('Permissions', {'fields': ('is_admin',)}),
         ('Senha', {'fields': ('password',)}),
     )
@@ -63,7 +63,7 @@ class FuncionarioAdmin(UsuarioAdmin):
 @admin.register(Professor)
 class ProfessorAdmin(UsuarioAdmin):
     fieldsets = (
-        ('Informações Pessoais', {'fields': ('matricula','nome', 'sobrenome', 'telefone', 'email', 'departamento',)}),
+        ('Informações Pessoais', {'fields': ('matricula', 'nome', 'sobrenome', 'telefone', 'email', 'departamento',)}),
         ('Permissions', {'fields': ('is_admin',)}),
         ('Senha', {'fields': ('password',)}),
     )
@@ -74,7 +74,7 @@ class ProfessorAdmin(UsuarioAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('matricula', 'nome', 'sobrenome', 'password1', 'password2','departamento',)}
+            'fields': ('matricula', 'nome', 'sobrenome', 'password1', 'password2', 'departamento',)}
         ),
     )
     
@@ -87,7 +87,7 @@ class ProfessorAdmin(UsuarioAdmin):
 
 @admin.register(Aluno)
 class AlunoAdmin(UsuarioAdmin):
-  pass
+    pass
 
 
 class UsuariosInline(admin.StackedInline):
@@ -98,20 +98,10 @@ class UsuariosInline(admin.StackedInline):
     
     
 class GrupoAdmin(admin.ModelAdmin):
-  inlines = (UsuariosInline, )
+    inlines = (UsuariosInline,)
 
 admin.site.register(TipoObjeto)
 admin.site.register(Objeto)
 admin.site.register(Departamento)
 admin.site.register(Setor)
 admin.site.register(Grupo, GrupoAdmin)
-
-
-
-
-
-
-
-
-
-
