@@ -89,11 +89,22 @@ class ProfessorAdmin(UsuarioAdmin):
 class AlunoAdmin(UsuarioAdmin):
   pass
 
+
+class UsuariosInline(admin.StackedInline):
+    model = GrupoUsuario
+    extra = 0
+    verbose_name_plural = 'Usuarios'
+    verbose_name = 'Usuario'
+    
+    
+class GrupoAdmin(admin.ModelAdmin):
+  inlines = (UsuariosInline, )
+
 admin.site.register(TipoObjeto)
 admin.site.register(Objeto)
 admin.site.register(Departamento)
 admin.site.register(Setor)
-admin.site.register(Grupo)
+admin.site.register(Grupo, GrupoAdmin)
 
 
 
