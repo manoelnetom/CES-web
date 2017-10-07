@@ -1,10 +1,20 @@
 from django.db import models
+from django.contrib.auth.models import PermissionsMixin
 from django.utils import timezone
 from datetime import datetime
+from django.conf import settings
+from django.contrib.auth.models import (
+    BaseUserManager, AbstractBaseUser
+)
 
 
-class TipoObjeto(models.Model):
-    id = models.AutoField(primary_key=True, blank=False, null=False)
+class AbstractModel(models.Model):
+    id = models.AutoField(primary_key=True)
+
+    class Meta:
+        abstract = True
+        
+class TipoObjeto(AbstractModel):
     nome = models.CharField(max_length=50, blank=False, null=False)
 
     def __str__(self):
@@ -15,37 +25,87 @@ class TipoObjeto(models.Model):
         verbose_name_plural = "Tipos de objeto"
 
 
-class Objeto(models.Model):
-    id = models.AutoField(primary_key=True, blank=False, null=False)
+class Objeto(AbstractModel):
     codigo = models.CharField(unique=True, max_length=50, blank=False, null=False)
     nome = models.CharField(unique=True, max_length=50, blank=False, null=False)
-    tipoObjeto_id = models.ForeignKey(TipoObjeto)
+    tipoObjeto = models.ForeignKey(TipoObjeto)
 
     def __str__(self):
         return self.nome
 
-class Usuario(models.Model):
-    id = models.AutoField(primary_key=True, blank=False, null=False)
-    nome = models.CharField(max_length=250, blank=True, null=True)
-    email = models.CharField(max_length=50, unique=True, blank=False)
-    senha = models.TextField(blank=False, null=False)
+class UsuarioManager(BaseUserManager):
+   def create_user(self, matricula, email, nome, sobrenome, password):
+        """Creates a new user profile."""
 
-    def __str__(self):
-        return self.nome
+        if not matricula:
+            raise ValueError('O campo Matricula é obrigatorio')
 
+        email = self.normalize_email(email)
+        user = self.model(matricula=matricula,
+                          email=self.normalize_email(email),
+                          nome=nome, 
+                          password=password)
+
+        user.set_password(password)
+        user.save(using=self._db)
+
+        return user
+
+   def create_superuser(self, matricula, email, nome, sobrenome, password):
+        """Creates a new user profile."""
+       
+        user = self.create_user(matricula, email, nome, sobrenome, password)
+
+        user.is_superuser = True
+        user.is_staff = True
+        user.save(using=self._db)
+
+        return user
+        
+class Usuario(AbstractBaseUser, PermissionsMixin):
+    matricula = models.CharField(max_length=16, unique=True)
+    email = models.EmailField(max_length=30, unique=True)
+    nome = models.CharField(max_length=30)
+    sobrenome = models.CharField(max_length=30)
+    telefone = models.CharField(max_length=250, blank=False, null=False)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False)
+        
+    date_joined = models.DateTimeField(auto_now_add = True)
+
+    objects = UsuarioManager()
+
+    EMAIL_FIELD = 'email'
+    USERNAME_FIELD = 'matricula'
+    REQUIRED_FIELDS = ['email', 'nome', 'sobrenome']
+    
     class Meta:
         verbose_name = "Usuário"
-        verbose_name_plural = "Usuários"
+        verbose_name_plural = "Usuários"   
+      
+    def get_full_name(self):
+        return '%s %s' % (self.nome, self.sobrenome)
+
+    def get_short_name(self):
+        return '%s' % self.nome
+   
+    def __str__(self):
+        return self.get_full_name()
+      
+class AbstractPerfilModel(Usuario):    
+     
+    class Meta:
+        abstract = True
         
         
-class Aluno(Usuario):
+class Aluno(AbstractPerfilModel):
     
     class Meta:
         verbose_name = "Aluno"
         verbose_name_plural = "Alunos"
 
-class Departamento(models.Model):
-    id = models.AutoField(primary_key=True, blank=False, null=False)
+class Departamento(AbstractModel):
     descricao= models.CharField(max_length=50, unique=True, blank=False)
 
     def __str__(self):
@@ -55,16 +115,15 @@ class Departamento(models.Model):
         verbose_name = "Departamento"
         verbose_name_plural = "Departamentos"
 
-class Professor(Usuario):
+class Professor(AbstractPerfilModel):
     departamento = models.ForeignKey(Departamento)
-
+      
     class Meta:
         verbose_name = "Professor"
         verbose_name_plural = "Professores"
 
 
-class Setor(models.Model):
-    id = models.AutoField(primary_key=True, blank=False, null=False)
+class Setor(AbstractModel):
     descricao = models.CharField(max_length=50, unique=True, blank=False)
 
     def __str__(self):
@@ -74,33 +133,17 @@ class Setor(models.Model):
         verbose_name = "Setor"
         verbose_name_plural = "Setores"
 
-class Funcionario(Usuario):
+class Funcionario(AbstractPerfilModel):
     setor= models.ForeignKey(Setor)
     class Meta:
         verbose_name = "Funcionario"
         verbose_name_plural = "Funcionarios"
         
-class Permissao(models.Model):
-    id  = models.AutoField(primary_key=True, blank=False, null=False)
+  
+class Grupo(AbstractModel):
+    membros = models.ManyToManyField(settings.AUTH_USER_MODEL, through='GrupoUsuario',  through_fields=('grupo', 'usuario'))
+    objetos = models.ManyToManyField(Objeto)
     descricao = models.CharField(max_length=50, unique=True, blank=False)
-
-    def __str__(self):
-        return self.descricao
-
-    class Meta:
-        verbose_name = "Permissão"
-        verbose_name_plural = "Permissões"       
-
-class Grupo(models.Model):
-    id = models.AutoField(primary_key=True, blank=False, null=False)
-    usuarios = models.ManyToManyField(Usuario)
-    #permissoes = models.ManyToManyField(Permissao) Verificar qual entidade de permissao irá usar (Permisao ou PermissaoGrupo)
-    #permissoes = models.ManyToManyField(PermissaoGrupo)
-    descricao = models.CharField(max_length=50, unique=True, blank=False)
-    data_criacao = models.DateTimeField(default=timezone.now)
-    data_alteracao = models.DateTimeField(default=timezone.now)
-    criado_por = models.ForeignKey('auth.User', related_name= 'criado')
-    alterado_por = models.ForeignKey('auth.User' , related_name= 'alerado')
 
     def __str__(self):
         return self.descricao
@@ -109,25 +152,18 @@ class Grupo(models.Model):
         verbose_name = "Grupo"
         verbose_name_plural = "Grupos"
 
-
-class PermissaoGrupo(models.Model):
-    id = models.AutoField(primary_key=True, blank=False, null=False)
-    grupo = models.ManyToManyField(Grupo)
-    permissao = models.ManyToManyField(Permissao)
-
-    def __str__(self):
-        return self.id
-
-    class Meta:
-        verbose_name = "Permissão de Grupo"
-        verbose_name_plural = "Permissões de Grupos"
-
-class Movimentacao(models.Model):
-    id = models.AutoField(primary_key=True, blank=False, null=False)
+        
+class GrupoUsuario(AbstractModel):
+    usuario =  models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    grupo = models.ForeignKey(Grupo, on_delete=models.CASCADE)
+    date_joined = models.DateTimeField(auto_now_add = True)
+    adicionado_por = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="grupo_adicionado_por")
+        
+class Movimentacao(AbstractModel):
     retirada = models.DateTimeField(default=timezone.now)
     devolucao = models.DateTimeField(default=timezone.now)
-    objeto_id = models.ForeignKey(Objeto)
-    usuario_id = models.ForeignKey(Usuario)
+    objeto = models.ForeignKey(Objeto)
+    usuario =  models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.id)
