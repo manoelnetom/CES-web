@@ -90,12 +90,12 @@ class AlunoAdmin(UsuarioAdmin):
     pass
 
 
-class UsuariosInline(admin.StackedInline):
+class UsuariosInline(admin.TabularInline):
     model = GrupoUsuario
     extra = 0
     verbose_name_plural = 'Usuarios'
     verbose_name = 'Usuario'
-    
+    fk_name = "grupo"
     
 class GrupoAdmin(admin.ModelAdmin):
     inlines = (UsuariosInline,)
