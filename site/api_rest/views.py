@@ -124,13 +124,13 @@ class TransferirObjetoServiceView(APIView):
 
     def post(self, request, format=None):
         # PRECISA VERIFICAR SE O NOVO USUÁRIO TEM
-        # PERMISSÃO PARA PEGA O OBJETO ANTES DE TUDO
+        # PERMISSÃO PARA PEGAR O OBJETO ANTES DE TUDO
         objeto_id = request.data.get('objeto_id')
         objeto = models.Objeto.objects.get(id=objeto_id)
         usuario_id = request.data.get('usuario_id')
         usuario = models.Usuario.objects.get(id=usuario_id)
         novo_usuario_id = request.data.get('novo_usuario_id')
-        novo_usuario = models.Usuario.get(id=novo_usuario_id)
+        novo_usuario = models.Usuario.objects.get(id=novo_usuario_id)
 
         movimentacao_id =  request.data.get('movimentacao_id')
         movimentacao = models.Movimentacao.objects.get(id=movimentacao_id)
