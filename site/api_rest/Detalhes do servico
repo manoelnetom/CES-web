@@ -2,7 +2,6 @@
 Observações:
 - Não é necessária autenticação já que não temos tela de login funcionando com o Emile;
 - Ainda não estão funcionando as permissões (perfis de usuário e objetos que eles podem pegar);
-- Emprestar, devolve e transferir ainda não estão funcionando.
 
 -----------------------------------------------------
 Campos retornados:
