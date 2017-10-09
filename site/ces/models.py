@@ -11,7 +11,7 @@ class AbstractModel(models.Model):
 
     class Meta:
         abstract = True
-        
+
 class TipoObjeto(AbstractModel):
     nome = models.CharField(max_length=50, blank=False, null=False)
 
@@ -43,13 +43,13 @@ class UsuarioManager(BaseUserManager):
                           password=password)
 
         user.set_password(password)
-        user.save(using=self._db)
+        user.save()
 
         return user
 
     def create_superuser(self, matricula, nome, sobrenome, password):
         """Creates a new user profile."""
-       
+
         user = self.create_user(matricula, nome, sobrenome, password)
 
         user.is_superuser = True
@@ -57,7 +57,7 @@ class UsuarioManager(BaseUserManager):
         user.save(using=self._db)
 
         return user
-        
+
 class Usuario(AbstractBaseUser, PermissionsMixin):
     matricula = models.CharField(max_length=16, unique=True)
     email = models.EmailField(max_length=30, unique=True)
@@ -67,7 +67,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
-        
+
     date_joined = models.DateTimeField(auto_now_add=True)
 
     objects = UsuarioManager()
@@ -75,28 +75,28 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'matricula'
     REQUIRED_FIELDS = ['nome', 'sobrenome']
-    
+
     class Meta:
         verbose_name = "Usuário"
-        verbose_name_plural = "Usuários"   
-      
+        verbose_name_plural = "Usuários"
+
     def get_full_name(self):
         return '%s %s' % (self.nome, self.sobrenome)
 
     def get_short_name(self):
         return '%s' % self.nome
-   
+
     def __str__(self):
         return self.get_full_name()
-      
-class AbstractPerfilModel(Usuario):    
-     
+
+class AbstractPerfilModel(Usuario):
+
     class Meta:
         abstract = True
-        
-        
+
+
 class Aluno(AbstractPerfilModel):
-    
+
     class Meta:
         verbose_name = "Aluno"
         verbose_name_plural = "Alunos"
@@ -113,7 +113,7 @@ class Departamento(AbstractModel):
 
 class Professor(AbstractPerfilModel):
     departamento = models.ForeignKey(Departamento)
-      
+
     class Meta:
         verbose_name = "Professor"
         verbose_name_plural = "Professores"
@@ -131,11 +131,16 @@ class Setor(AbstractModel):
 
 class Funcionario(AbstractPerfilModel):
     setor = models.ForeignKey(Setor)
+
     class Meta:
         verbose_name = "Funcionario"
         verbose_name_plural = "Funcionarios"
-        
-  
+
+    def save(self, *args, **kwargs):
+        self.is_staff = True
+        super(Funcionario, self).save(*args, **kwargs)
+
+
 class Grupo(AbstractModel):
     membros = models.ManyToManyField(settings.AUTH_USER_MODEL, through='GrupoUsuario', through_fields=('grupo', 'usuario'))
     objetos = models.ManyToManyField(Objeto)
@@ -148,13 +153,13 @@ class Grupo(AbstractModel):
         verbose_name = "Grupo"
         verbose_name_plural = "Grupos"
 
-        
+
 class GrupoUsuario(AbstractModel):
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     grupo = models.ForeignKey(Grupo, on_delete=models.CASCADE)
     date_joined = models.DateTimeField(auto_now_add=True)
     adicionado_por = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="grupo_adicionado_por")
-        
+
 class Movimentacao(AbstractModel):
     retirada = models.DateTimeField(default=timezone.now)
     devolucao = models.DateTimeField(default=timezone.now)
