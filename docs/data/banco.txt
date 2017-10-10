@@ -1,0 +1,119 @@
+Usuario
+-
+id PK int
+nome varchar(60)
+matricula varchar(30)
+telefone varchar(15)
+email varchar(200)
+senha varchar(200)
+ativo boolean
+
+Professor
+-
+id PK int
+usuario_id int FK - Usuario.id
+departamento_id int FK >- Departamento
+
+Departamento
+-
+id PK int
+descricao varchar(40)
+
+Aluno
+-
+id PK int
+usuario_id int FK - Usuario.id
+tipo int FK - TipoAluno.id
+
+TipoAluno
+-
+id PK int
+descricao varchar(50) 
+
+
+Funcionario
+-
+id PK int
+usuario_id int FK >- Usuario.id
+adm boolean
+setor int FK - Setor.id
+
+Setor
+-
+id PK int
+descricao varchar(40)
+
+
+GrupoUsuario
+-
+usuario_id int FK >- Usuario.id
+grupo_id int FK >- Grupo.id
+
+Grupo
+-
+id PK int
+descricao  varchar(200)
+data_criacao dateTime default=GETUTCDATE()
+data_alteracao NULL dateTime
+criado_por int FK >- Usuario.id
+alterado_por int FK >- Usuario.id
+ativo boolean 
+
+Objeto
+-
+id PK int FK >- Movimentacao.usuario_id
+codigo varchar(15)
+nome varchar(80)
+tipoObjeto_id int FK >- TipoObjeto.id
+
+TipoObjeto
+-
+id PK int
+nome varchar()
+
+Movimentacao
+-
+id PK int
+retirada dateTime
+devolucao NULL dateTime
+objeto_id int
+usuario_id  int FK >- Usuario.id
+
+PermissaoGrupo
+-
+grupo_id int FK >- Grupo.id
+permissao_id FK >- Permissao.id
+
+
+
+Permissao
+-
+id int PK
+descricao varchar(50)
+objeto_id FK >- Objeto.id
+
+PermissaObjetos
+-
+objeto_id FK >- Objeto.id
+permissao_id FK >- Permissao.id
+
+[settings]
+Position 225 156
+Zoom 60
+
+[layout]
+Professor 112 173
+Aluno 264 -74
+Usuario 544 320
+Grupo 603 768
+Movimentacao 828 105
+TipoObjeto 1592 150
+Objeto 1200 -34
+Funcionario 91 427
+TipoAluno -207 -57
+Departamento -269 185
+Setor -252 449
+PermissaoGrupo 1077 1022
+Permissao 1265 744
+GrupoUsuario 198 732
+PermissaObjetos 1211 247
