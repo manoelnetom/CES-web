@@ -29,7 +29,20 @@ class Objeto(AbstractModel):
 
     def __str__(self):
         return self.nome
+      
+class GrupoObjeto(models.Model):
+    descricao = models.CharField(max_length=50, unique=True, blank=False)
+    membros = models.ManyToManyField(Objeto, on_delete=models.CASCADE)
+    dataCriacao = models.DateTimeField(auto_now_add=True)
+    ativo = models.BooleanField(default=True)
+    
+    def __str__(self):
+        return self.descricao
 
+    class Meta:
+        verbose_name = "Grupo de Objetos"
+        verbose_name_plural = "Grupos de Objetos"
+        
 class UsuarioManager(BaseUserManager):
     def create_user(self, matricula, nome, sobrenome, password):
         """Creates a new user profile."""
@@ -94,7 +107,6 @@ class AbstractPerfilModel(Usuario):
     class Meta:
         abstract = True
 
-
 class Aluno(AbstractPerfilModel):
 
     class Meta:
@@ -118,7 +130,6 @@ class Professor(AbstractPerfilModel):
         verbose_name = "Professor"
         verbose_name_plural = "Professores"
 
-
 class Setor(AbstractModel):
     descricao = models.CharField(max_length=50, unique=True, blank=False)
 
@@ -140,25 +151,19 @@ class Funcionario(AbstractPerfilModel):
         self.is_staff = True
         super(Funcionario, self).save(*args, **kwargs)
 
-
-class Grupo(AbstractModel):
-    membros = models.ManyToManyField(settings.AUTH_USER_MODEL, through='GrupoUsuario', through_fields=('grupo', 'usuario'))
-    objetos = models.ManyToManyField(Objeto)
+class GrupoUsuario(AbstractModel):
     descricao = models.CharField(max_length=50, unique=True, blank=False)
+    membros = models.ManyToManyField(settings.AUTH_USER_MODEL)  
+    acessos = models.ManyToManyField(GrupoObjeto, on_delete=models.CASCADE)
+    dataCriacao = models.DateTimeField(auto_now_add=True)
+    ativo = models.BooleanField(default=True)
 
     def __str__(self):
         return self.descricao
 
     class Meta:
-        verbose_name = "Grupo"
-        verbose_name_plural = "Grupos"
-
-
-class GrupoUsuario(AbstractModel):
-    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    grupo = models.ForeignKey(Grupo, on_delete=models.CASCADE)
-    date_joined = models.DateTimeField(auto_now_add=True)
-    adicionado_por = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="grupo_adicionado_por")
+        verbose_name = "Grupo de usuários"
+        verbose_name_plural = "Grupos de usuários"  
 
 class Movimentacao(AbstractModel):
     retirada = models.DateTimeField(default=timezone.now)

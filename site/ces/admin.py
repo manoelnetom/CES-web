@@ -11,6 +11,8 @@ class UsuarioAdmin(BaseUserAdmin):
     form = UsuarioEdicaoForm
     add_form = UsuarioNovoForm
 
+    inlines = (GrupoInline,)
+    
     fieldsets = (
         ('Informações Pessoais', {'fields': ('matricula', 'nome', 'sobrenome', 'telefone', 'email',)}),
         ('Permissões', {'fields': ('is_admin', 'user_permissions',)}),
@@ -89,19 +91,10 @@ class ProfessorAdmin(UsuarioAdmin):
 class AlunoAdmin(UsuarioAdmin):
     pass
 
-
-class UsuariosInline(admin.TabularInline):
-    model = GrupoUsuario
-    extra = 0
-    verbose_name_plural = 'Usuarios'
-    verbose_name = 'Usuario'
-    fk_name = "grupo"
     
-class GrupoAdmin(admin.ModelAdmin):
-    inlines = (UsuariosInline,)
-
 admin.site.register(TipoObjeto)
 admin.site.register(Objeto)
 admin.site.register(Departamento)
 admin.site.register(Setor)
-admin.site.register(Grupo, GrupoAdmin)
+admin.site.register(GrupoUsuario)
+admin.site.register(GrupoObjeto)
