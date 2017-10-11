@@ -23,12 +23,6 @@ Aluno
 -
 id PK int
 usuario_id int FK - Usuario.id
-tipo int FK - TipoAluno.id
-
-TipoAluno
--
-id PK int
-descricao varchar(50) 
 
 
 Funcionario
@@ -44,19 +38,16 @@ id PK int
 descricao varchar(40)
 
 
-GrupoUsuario
+MembroGrupoUsuario
 -
 usuario_id int FK >- Usuario.id
-grupo_id int FK >- Grupo.id
+grupo_id int FK >- GrupoUsuario.id
 
-Grupo
+GrupoUsuario
 -
 id PK int
 descricao  varchar(200)
 data_criacao dateTime default=GETUTCDATE()
-data_alteracao NULL dateTime
-criado_por int FK >- Usuario.id
-alterado_por int FK >- Usuario.id
 ativo boolean 
 
 Objeto
@@ -79,41 +70,40 @@ devolucao NULL dateTime
 objeto_id int
 usuario_id  int FK >- Usuario.id
 
-PermissaoGrupo
+Acesso
 -
-grupo_id int FK >- Grupo.id
-permissao_id FK >- Permissao.id
+grupo_usuario_id int FK >- GrupoUsuario.id
+grupo_objeto_id FK >- GrupoObjeto.id
 
 
-
-Permissao
+GrupoObjeto
 -
 id int PK
 descricao varchar(50)
-objeto_id FK >- Objeto.id
+data_criacao dateTime default=GETUTCDATE()
+ativo boolean 
 
-PermissaObjetos
+MembroGrupoObjeto
 -
-objeto_id FK >- Objeto.id
-permissao_id FK >- Permissao.id
+objeto_id int FK >- Objeto.id
+grupo_id int FK >- GrupoObjeto.id
 
 [settings]
-Position 225 156
-Zoom 60
+Position 137 48
+Zoom 50
 
 [layout]
-Professor 112 173
-Aluno 264 -74
-Usuario 544 320
-Grupo 603 768
-Movimentacao 828 105
-TipoObjeto 1592 150
-Objeto 1200 -34
-Funcionario 91 427
-TipoAluno -207 -57
+Professor 8 175
+Aluno -2 -64
+Usuario 247 -59
+GrupoUsuario 521 516
+Movimentacao 678 57
+TipoObjeto 1459 73
+Objeto 956 -22
+Funcionario 9 452
 Departamento -269 185
 Setor -252 449
-PermissaoGrupo 1077 1022
-Permissao 1265 744
-GrupoUsuario 198 732
-PermissaObjetos 1211 247
+Acesso 747 351
+GrupoObjeto 1004 531
+MembroGrupoObjeto 1104 242
+MembroGrupoUsuario 223 370
