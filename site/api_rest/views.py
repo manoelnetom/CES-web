@@ -140,3 +140,32 @@ class TransferirObjetoServiceView(APIView):
         movimentacao = models.Movimentacao.objects.create(retirada = datetime.now(),devolucao=None,
                                                               objeto_id=objeto, usuario_id=novo_usuario)
         return Response(200)
+
+
+class FiltroMovimentacaoUsuarioServiceView(APIView):
+    # permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, format=None):
+        user = models.Usuario.objects.get(id=request.data.get('usuario'))
+        nome = request.data.get('nome_objeto')
+        retirada = request.data.get('data_retirada')
+        devolucao = request.data.get('data_devolucao')
+        status = request.data.get('status')
+        tipo = request.data.get('tipo_objeto')
+
+        movimentacoes =  models.Movimentacao.objects.filter(usuario_id__id=user.id).all()
+        if nome:
+            movimentacoes = movimentacoes.filter(objeto_id__nome__contains=nome).all()
+        if retirada:
+            retirada = datetime.strptime(retirada, '%d/%m/%Y')
+            movimentacoes = movimentacoes.filter(retirada__gte=retirada.date()).all()
+        if devolucao:
+            devolucao = datetime.strptime(devolucao, '%d/%m/%Y')
+            movimentacoes = movimentacoes.filter(devolucao__gte=devolucao.date()).all()
+        if status:
+            movimentacoes = movimentacoes.filter(status=status).all()
+        if tipo:
+            movimentacoes = movimentacoes.filter(objeto_id__tipoObjeto_id=tipo).all()
+
+        serializer = serializers.MovimentacaoSerializer(movimentacoes, many=True)
+        return Response(serializer.data)
