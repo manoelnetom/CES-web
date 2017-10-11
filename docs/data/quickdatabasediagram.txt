@@ -1,0 +1,109 @@
+Usuario
+-
+id PK int
+nome varchar(60)
+matricula varchar(30)
+telefone varchar(15)
+email varchar(200)
+senha varchar(200)
+ativo boolean
+
+Professor
+-
+id PK int
+usuario_id int FK - Usuario.id
+departamento_id int FK >- Departamento
+
+Departamento
+-
+id PK int
+descricao varchar(40)
+
+Aluno
+-
+id PK int
+usuario_id int FK - Usuario.id
+
+
+Funcionario
+-
+id PK int
+usuario_id int FK >- Usuario.id
+adm boolean
+setor int FK - Setor.id
+
+Setor
+-
+id PK int
+descricao varchar(40)
+
+
+MembroGrupoUsuario
+-
+usuario_id int FK >- Usuario.id
+grupo_id int FK >- GrupoUsuario.id
+
+GrupoUsuario
+-
+id PK int
+descricao  varchar(200)
+data_criacao dateTime default=GETUTCDATE()
+ativo boolean 
+
+Objeto
+-
+id PK int FK >- Movimentacao.usuario_id
+codigo varchar(15)
+nome varchar(80)
+tipoObjeto_id int FK >- TipoObjeto.id
+
+TipoObjeto
+-
+id PK int
+nome varchar()
+
+Movimentacao
+-
+id PK int
+retirada dateTime
+devolucao NULL dateTime
+objeto_id int
+usuario_id  int FK >- Usuario.id
+
+Acesso
+-
+grupo_usuario_id int FK >- GrupoUsuario.id
+grupo_objeto_id FK >- GrupoObjeto.id
+
+
+GrupoObjeto
+-
+id int PK
+descricao varchar(50)
+data_criacao dateTime default=GETUTCDATE()
+ativo boolean 
+
+MembroGrupoObjeto
+-
+objeto_id int FK >- Objeto.id
+grupo_id int FK >- GrupoObjeto.id
+
+[settings]
+Position 137 48
+Zoom 50
+
+[layout]
+Professor 8 175
+Aluno -2 -64
+Usuario 247 -59
+GrupoUsuario 521 516
+Movimentacao 678 57
+TipoObjeto 1459 73
+Objeto 956 -22
+Funcionario 9 452
+Departamento -269 185
+Setor -252 449
+Acesso 747 351
+GrupoObjeto 1004 531
+MembroGrupoObjeto 1104 242
+MembroGrupoUsuario 223 370
