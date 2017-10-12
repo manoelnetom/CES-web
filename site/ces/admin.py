@@ -6,6 +6,8 @@ from .models import Usuario
 from .models import Movimentacao
 from .models import Permissao_Objeto_x_Usuario
 from .models import Permissao_Objeto_x_PerfilUsuario
+from .models import Transferencia
+from .models import Reserva
 from .models import AdminWeb
 
 #para tornar models visível no site
@@ -16,4 +18,6 @@ admin.site.register(Usuario)
 admin.site.register(Movimentacao)
 admin.site.register(Permissao_Objeto_x_Usuario)
 admin.site.register(Permissao_Objeto_x_PerfilUsuario)
+admin.site.register(Transferencia)
+admin.site.register(Reserva)
 admin.site.register(AdminWeb)

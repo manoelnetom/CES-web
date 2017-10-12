@@ -7,6 +7,24 @@ from ces import models
 from datetime import datetime
 
 
+class UsuariosServiceView(APIView):
+    # permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, format=None):
+        usuarios =  models.Usuario.objects.filter()
+        serializer = serializers.UsuarioSerializer(usuarios, many=True)
+        return Response(serializer.data)
+
+
+class UsuarioServiceView(APIView):
+    # permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, usuario_id, format=None):
+        usuario =  models.Usuario.objects.get(id=usuario_id)
+        serializer = serializers.UsuarioSerializer(usuario)
+        return Response(serializer.data)
+
+
 class ObjetosServiceView(APIView):
     # permission_classes = (permissions.IsAuthenticated,)
 
@@ -29,7 +47,8 @@ class ObjetoDisponivelServiceView(APIView):
     # permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, format=None):
-        objetos =  models.Objeto.objects.all()
+        objetos =  models.Objeto.objects.filter(status=1)
+        reservas = models.Objeto.objects.filter(data)
         movimentacoes = models.Movimentacao.objects.filter(devolucao=None)
         movimentacoes_objetos = []
         objetos_list = []
@@ -100,9 +119,11 @@ class EmprestarObjetoServiceView(APIView):
         usuario_id = request.data.get('usuario_id')
         usuario = models.Usuario.objects.get(id=usuario_id)
 
-        movimentacao = models.Movimentacao.objects.create(retirada = datetime.now(),devolucao=None,
-                                                              objeto_id=objeto, usuario_id=usuario)
-        return Response(200)
+        movimentacao = models.Movimentacao.objects.create(retirada=datetime.now(), devolucao=None, objeto_id=objeto,
+                                                          usuario_id=usuario, status=1)
+
+        serializer = serializers.MovimentacaoSerializer(movimentacao, many=True)
+        return Response(serializer.data)
 
 
 class DevolverObjetoServiceView(APIView):
@@ -112,11 +133,13 @@ class DevolverObjetoServiceView(APIView):
         movimentacao_id =  request.data.get('movimentacao_id')
 
         movimentacao = models.Movimentacao.objects.get(id=movimentacao_id)
+        movimentacao.status = 3
         movimentacao.devolucao = datetime.now()
         movimentacao.save()
 
-        serializer = serializers.MovimentacaoSerializer(movimentacao)
-        return Response(serializer.data)
+        #serializer = serializers.MovimentacaoSerializer(movimentacao)
+        #return Response(serializer.data)
+        return Response(200)
 
 
 class TransferirObjetoServiceView(APIView):
@@ -140,6 +163,11 @@ class TransferirObjetoServiceView(APIView):
         movimentacao = models.Movimentacao.objects.create(retirada = datetime.now(),devolucao=None,
                                                               objeto_id=objeto, usuario_id=novo_usuario)
         return Response(200)
+
+
+#class ConfirmarTransferenciaObjetoServiceView(APIView):
+    # permission_classes = (permissions.IsAuthenticated,)
+ #   def post(self, request, format=None):
 
 
 class FiltroMovimentacaoUsuarioServiceView(APIView):
