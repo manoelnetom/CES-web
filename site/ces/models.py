@@ -32,7 +32,7 @@ class Objeto(AbstractModel):
       
 class GrupoObjeto(models.Model):
     descricao = models.CharField(max_length=50, unique=True, blank=False)
-    membros = models.ManyToManyField(Objeto, on_delete=models.CASCADE)
+    objetos = models.ManyToManyField(Objeto)
     dataCriacao = models.DateTimeField(auto_now_add=True)
     ativo = models.BooleanField(default=True)
     
@@ -153,8 +153,8 @@ class Funcionario(AbstractPerfilModel):
 
 class GrupoUsuario(AbstractModel):
     descricao = models.CharField(max_length=50, unique=True, blank=False)
-    membros = models.ManyToManyField(settings.AUTH_USER_MODEL)  
-    acessos = models.ManyToManyField(GrupoObjeto, on_delete=models.CASCADE)
+    usuarios = models.ManyToManyField(settings.AUTH_USER_MODEL)  
+    acessos = models.ManyToManyField(GrupoObjeto)
     dataCriacao = models.DateTimeField(auto_now_add=True)
     ativo = models.BooleanField(default=True)
 

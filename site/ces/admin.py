@@ -10,8 +10,6 @@ class UsuarioAdmin(BaseUserAdmin):
     # The forms to add and change user instances
     form = UsuarioEdicaoForm
     add_form = UsuarioNovoForm
-
-    inlines = (GrupoInline,)
     
     fieldsets = (
         ('Informações Pessoais', {'fields': ('matricula', 'nome', 'sobrenome', 'telefone', 'email',)}),
@@ -90,7 +88,6 @@ class ProfessorAdmin(UsuarioAdmin):
 @admin.register(Aluno)
 class AlunoAdmin(UsuarioAdmin):
     pass
-
     
 admin.site.register(TipoObjeto)
 admin.site.register(Objeto)
