@@ -4,7 +4,9 @@ from rest_framework import authentication, permissions
 from rest_framework.views import APIView
 from api_rest import serializers
 from ces import models
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
+import datetime as datetimebase
+import pytz
 
 
 class UsuariosServiceView(APIView):
@@ -112,18 +114,30 @@ class EmprestarObjetoServiceView(APIView):
     # permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, format=None):
-        # PRECISA VERIFICAR SE O NOVO USUÁRIO TEM
-        # PERMISSÃO PARA PEGA O OBJETO ANTES DE TUDO
         objeto_id = request.data.get('objeto_id')
         objeto = models.Objeto.objects.get(id=objeto_id)
-        usuario_id = request.data.get('usuario_id')
-        usuario = models.Usuario.objects.get(id=usuario_id)
-
-        movimentacao = models.Movimentacao.objects.create(retirada=datetime.now(), devolucao=None, objeto_id=objeto,
-                                                          usuario_id=usuario, status=1)
-
-        serializer = serializers.MovimentacaoSerializer(movimentacao, many=True)
-        return Response(serializer.data)
+        if objeto.status == 1:
+            movimentacoes = models.Movimentacao.objects.filter(objeto_id=objeto, status=8, reserva__isnull=False)
+            if movimentacoes:
+                tem_reserva = False
+                now = datetime.utcnow().replace(tzinfo=pytz.UTC)
+                for mov in movimentacoes:
+                    if mov.reserva < now < (mov.reserva + timedelta(minutes=10)):
+                        tem_reserva = True
+                        break
+                if tem_reserva == False:
+                    usuario_id = request.data.get('usuario_id')
+                    usuario = models.Usuario.objects.get(id = usuario_id)
+                    models.Movimentacao.objects.create(retirada = now,
+                                                       devolucao = None,
+                                                       reserva = None,
+                                                       objeto_id = objeto,
+                                                       usuario_id = usuario,
+                                                       status = 1)
+                    objeto.status = 3
+                    objeto.save()
+                    return Response(200)
+        return Response(204)
 
 
 class DevolverObjetoServiceView(APIView):
@@ -137,8 +151,6 @@ class DevolverObjetoServiceView(APIView):
         movimentacao.devolucao = datetime.now()
         movimentacao.save()
 
-        #serializer = serializers.MovimentacaoSerializer(movimentacao)
-        #return Response(serializer.data)
         return Response(200)
 
 
@@ -146,8 +158,6 @@ class TransferirObjetoServiceView(APIView):
     # permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, format=None):
-        # PRECISA VERIFICAR SE O NOVO USUÁRIO TEM
-        # PERMISSÃO PARA PEGAR O OBJETO ANTES DE TUDO
         objeto_id = request.data.get('objeto_id')
         objeto = models.Objeto.objects.get(id=objeto_id)
         usuario_id = request.data.get('usuario_id')
@@ -163,11 +173,6 @@ class TransferirObjetoServiceView(APIView):
         movimentacao = models.Movimentacao.objects.create(retirada = datetime.now(),devolucao=None,
                                                               objeto_id=objeto, usuario_id=novo_usuario)
         return Response(200)
-
-
-#class ConfirmarTransferenciaObjetoServiceView(APIView):
-    # permission_classes = (permissions.IsAuthenticated,)
- #   def post(self, request, format=None):
 
 
 class FiltroMovimentacaoUsuarioServiceView(APIView):

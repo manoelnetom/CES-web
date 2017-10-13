@@ -22,18 +22,6 @@ STATUS_OBJETO = (
 )
 
 
-STATUS_MOVIMENTACOES = {
-    (1, 'Solicitado retirada'),
-    (2, 'Emprestado'),
-    (3, 'Solicitado Devolução'),
-    (4, 'Devolvido'),
-    (5, 'Solicitado Transferência'),
-    (6, 'Transferência confirmada'),
-    (7, 'Solicitado Reserva'),
-    (8, 'Reserva confirmada'),
-}
-
-
 class TipoObjeto(models.Model):
     id = models.AutoField(primary_key=True, blank=False, null=False)
     nome = models.CharField(max_length=50, blank=True, null=True)
@@ -88,11 +76,10 @@ class Movimentacao(models.Model):
     id= models.AutoField(primary_key=True, blank=False, null=False)
     retirada = models.DateTimeField(null=True, blank=True)
     devolucao = models.DateTimeField(null=True, blank=True)
+    reserva = models.DateTimeField(null=True, blank=True)
     objeto_id = models.ForeignKey(Objeto)
     usuario_id = models.ForeignKey(Usuario)
-    status = models.IntegerField(choices=STATUS_MOVIMENTACOES, default=0, blank=True)
-
-    status = models.IntegerField(choices=STATUS_MOVIMENTACAO, default=0)
+    status = models.IntegerField(choices=STATUS_MOVIMENTACAO, default=0, blank=True)
 
     def __str__(self):
         return str("{0} para {1}").format(self.objeto_id, self.usuario_id)
