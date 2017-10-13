@@ -231,8 +231,6 @@ class ListarTransferenciasUsuarioServiceView(APIView):
     def post(self, request, format=None):
         tipo = request.data.get("tipo")
         usuario_id = request.data.get("usuario_id")
-        print(tipo)
-        print(usuario_id)
         usuario =  models.Usuario.objects.get(id=usuario_id)
         transferencias = None
         if tipo == 1:
@@ -240,6 +238,15 @@ class ListarTransferenciasUsuarioServiceView(APIView):
         if tipo == 2:
             transferencias = models.Transferencia.objects.filter(movimentacao_id_destino__usuario_id=usuario)
         serializer = serializers.TransferenciaSerializer(transferencias, many=True)
+        return Response(serializer.data)
+
+
+class ExibirTransferenciaServiceView(APIView):
+
+    def post(self, request, format=None):
+        transferencia_id = request.data.get("transferencia_id")
+        transferencia = models.Transferencia.objects.get(id=transferencia_id)
+        serializer = serializers.TransferenciaSerializer(transferencia)
         return Response(serializer.data)
 
 
