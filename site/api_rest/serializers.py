@@ -33,3 +33,11 @@ class UsuarioSerializer(serializers.ModelSerializer):
         model = models.Usuario
         fields = ('id', 'name', 'email', 'profileName')
         depth = 1
+
+
+class TransferenciaSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Transferencia
+        fields = '__all__'
+        depth = 1

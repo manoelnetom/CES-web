@@ -226,6 +226,23 @@ class CancelarTransferirObjetoServiceView(APIView):
         return Response(200)
 
 
+class ListarTransferenciasUsuarioServiceView(APIView):
+
+    def post(self, request, format=None):
+        tipo = request.data.get("tipo")
+        usuario_id = request.data.get("usuario_id")
+        print(tipo)
+        print(usuario_id)
+        usuario =  models.Usuario.objects.get(id=usuario_id)
+        transferencias = None
+        if tipo == 1:
+            transferencias = models.Transferencia.objects.filter(movimentacao_id_origem__usuario_id=usuario)
+        if tipo == 2:
+            transferencias = models.Transferencia.objects.filter(movimentacao_id_destino__usuario_id=usuario)
+        serializer = serializers.TransferenciaSerializer(transferencias, many=True)
+        return Response(serializer.data)
+
+
 class FiltroMovimentacaoUsuarioServiceView(APIView):
     # permission_classes = (permissions.IsAuthenticated,)
 
