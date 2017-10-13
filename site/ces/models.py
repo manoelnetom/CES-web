@@ -120,24 +120,10 @@ class Permissao_Objeto_x_PerfilUsuario(models.Model):
         return str(self.id)
 
 
-class Reserva(models.Model):
-    id = models.AutoField(primary_key=True, blank=False, null=False)
-    dataReserva = models.DateTimeField(null=True, blank=True)
-    objeto_id = models.ForeignKey(Objeto)
-    usuario_id = models.ForeignKey(Usuario)
-
-    def __str__(self):
-        return str("{0} reservou {1} para o dia {2}").format(self.usuario_id, self.objeto_id, self.dataReserva)
-
-    class Meta:
-        verbose_name = "Reserva"
-        verbose_name_plural = "Reservas"
-
-
 class Transferencia(models.Model):
     id= models.AutoField(primary_key=True, blank=False, null=False)
-    remetente = models.ForeignKey(Movimentacao, related_name='remetente')
-    destinatario = models.ForeignKey(Movimentacao, related_name='destinatario')
+    movimentacao_id_origem = models.ForeignKey(Movimentacao, related_name='remetente')
+    movimentacao_id_destino = models.ForeignKey(Movimentacao, related_name='destinatario')
 
     def __str__(self):
         return str("Transferindo {0} de {1} para {2}").format(self.remetente.objeto_id, self.remetente.usuario_id, self.destinatario.usuario_id)
