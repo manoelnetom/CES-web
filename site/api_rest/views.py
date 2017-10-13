@@ -160,19 +160,32 @@ class TransferirObjetoServiceView(APIView):
     def post(self, request, format=None):
         objeto_id = request.data.get('objeto_id')
         objeto = models.Objeto.objects.get(id=objeto_id)
-        usuario_id = request.data.get('usuario_id')
-        usuario = models.Usuario.objects.get(id=usuario_id)
-        novo_usuario_id = request.data.get('novo_usuario_id')
-        novo_usuario = models.Usuario.objects.get(id=novo_usuario_id)
+        movimentacoes = models.Movimentacao.objects.filter(objeto_id=objeto, status=8, reserva__isnull=False)
+        if movimentacoes:
+            tem_reserva = False
+            now = datetime.utcnow().replace(tzinfo=pytz.UTC)
+            for mov in movimentacoes:
+                if mov.reserva < now < (mov.reserva + timedelta(minutes=10)):
+                    tem_reserva = True
+                    break
+            if tem_reserva == False:
+                movimentacao_id = request.data.get('movimentacao_id')
+                movimentacao_origem = models.Movimentacao.objects.get(id=movimentacao_id)
+                movimentacao_origem.status = 5
+                movimentacao_origem.save()
 
-        movimentacao_id =  request.data.get('movimentacao_id')
-        movimentacao = models.Movimentacao.objects.get(id=movimentacao_id)
-        movimentacao.devolucao = datetime.now()
-        movimentacao.save()
-
-        movimentacao = models.Movimentacao.objects.create(retirada = datetime.now(),devolucao=None,
-                                                              objeto_id=objeto, usuario_id=novo_usuario)
-        return Response(200)
+                novo_usuario_id = request.data.get('novo_usuario_id')
+                novo_usuario = models.Usuario.objects.get(id=novo_usuario_id)
+                movimentacao_destino = models.Movimentacao.objects.create(retirada = now,
+                                                   devolucao = None,
+                                                   reserva = None,
+                                                   objeto_id = objeto,
+                                                   usuario_id = novo_usuario,
+                                                   status = 6)
+                tranferencia = models.Transferencia.objects.create(movimentacao_id_origem = movimentacao_origem,
+                                                                   movimentacao_id_destino = movimentacao_destino)
+                return Response(200)
+        return Response(204)
 
 
 class FiltroMovimentacaoUsuarioServiceView(APIView):
