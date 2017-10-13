@@ -9,6 +9,9 @@ import datetime as datetimebase
 import pytz
 
 
+tolerancia = 10; # Tolerância da reserva
+
+
 class UsuariosServiceView(APIView):
     # permission_classes = (permissions.IsAuthenticated,)
 
@@ -116,27 +119,27 @@ class EmprestarObjetoServiceView(APIView):
     def post(self, request, format=None):
         objeto_id = request.data.get('objeto_id')
         objeto = models.Objeto.objects.get(id=objeto_id)
+        tem_reserva = False
+        now = datetime.utcnow().replace(tzinfo=pytz.UTC)
         if objeto.status == 1:
             movimentacoes = models.Movimentacao.objects.filter(objeto_id=objeto, status=8, reserva__isnull=False)
             if movimentacoes:
-                tem_reserva = False
-                now = datetime.utcnow().replace(tzinfo=pytz.UTC)
                 for mov in movimentacoes:
-                    if mov.reserva < now < (mov.reserva + timedelta(minutes=10)):
+                    if mov.reserva < now < (mov.reserva + timedelta(minutes=tolerancia)):
                         tem_reserva = True
                         break
-                if tem_reserva == False:
-                    usuario_id = request.data.get('usuario_id')
-                    usuario = models.Usuario.objects.get(id = usuario_id)
-                    models.Movimentacao.objects.create(retirada = now,
-                                                       devolucao = None,
-                                                       reserva = None,
-                                                       objeto_id = objeto,
-                                                       usuario_id = usuario,
-                                                       status = 1)
-                    objeto.status = 3
-                    objeto.save()
-                    return Response(200)
+            if tem_reserva == False:
+                usuario_id = request.data.get('usuario_id')
+                usuario = models.Usuario.objects.get(id = usuario_id)
+                models.Movimentacao.objects.create(retirada = now,
+                                                   devolucao = None,
+                                                   reserva = None,
+                                                   objeto_id = objeto,
+                                                   usuario_id = usuario,
+                                                   status = 1)
+                objeto.status = 3
+                objeto.save()
+                return Response(200)
         return Response(204)
 
 
@@ -160,31 +163,31 @@ class TransferirObjetoServiceView(APIView):
     def post(self, request, format=None):
         objeto_id = request.data.get('objeto_id')
         objeto = models.Objeto.objects.get(id=objeto_id)
+        tem_reserva = False
+        now = datetime.utcnow().replace(tzinfo=pytz.UTC)
         movimentacoes = models.Movimentacao.objects.filter(objeto_id=objeto, status=8, reserva__isnull=False)
         if movimentacoes:
-            tem_reserva = False
-            now = datetime.utcnow().replace(tzinfo=pytz.UTC)
             for mov in movimentacoes:
-                if mov.reserva < now < (mov.reserva + timedelta(minutes=10)):
+                if mov.reserva < now < (mov.reserva + timedelta(minutes=tolerancia)):
                     tem_reserva = True
                     break
-            if tem_reserva == False:
-                movimentacao_id = request.data.get('movimentacao_id')
-                movimentacao_origem = models.Movimentacao.objects.get(id=movimentacao_id)
-                movimentacao_origem.status = 5
-                movimentacao_origem.save()
+        if tem_reserva == False:
+            movimentacao_id = request.data.get('movimentacao_id')
+            movimentacao_origem = models.Movimentacao.objects.get(id=movimentacao_id)
+            movimentacao_origem.status = 5
+            movimentacao_origem.save()
 
-                novo_usuario_id = request.data.get('novo_usuario_id')
-                novo_usuario = models.Usuario.objects.get(id=novo_usuario_id)
-                movimentacao_destino = models.Movimentacao.objects.create(retirada = now,
-                                                   devolucao = None,
-                                                   reserva = None,
-                                                   objeto_id = objeto,
-                                                   usuario_id = novo_usuario,
-                                                   status = 6)
-                tranferencia = models.Transferencia.objects.create(movimentacao_id_origem = movimentacao_origem,
-                                                                   movimentacao_id_destino = movimentacao_destino)
-                return Response(200)
+            novo_usuario_id = request.data.get('novo_usuario_id')
+            novo_usuario = models.Usuario.objects.get(id=novo_usuario_id)
+            movimentacao_destino = models.Movimentacao.objects.create(retirada = now,
+                                               devolucao = None,
+                                               reserva = None,
+                                               objeto_id = objeto,
+                                               usuario_id = novo_usuario,
+                                               status = 6)
+            tranferencia = models.Transferencia.objects.create(movimentacao_id_origem = movimentacao_origem,
+                                                               movimentacao_id_destino = movimentacao_destino)
+            return Response(200)
         return Response(204)
 
 
@@ -248,6 +251,38 @@ class ExibirTransferenciaServiceView(APIView):
         transferencia = models.Transferencia.objects.get(id=transferencia_id)
         serializer = serializers.TransferenciaSerializer(transferencia)
         return Response(serializer.data)
+
+
+class SolicitarReservaServiceView(APIView):
+
+    def post(self, request, format=None):
+        objeto_id = request.data.get('objeto_id')
+        objeto = models.Objeto.objects.get(id=objeto_id)
+        tem_reserva = False
+        data_reserva_str = request.data.get('data_reserva')
+        data_reserva_obj = datetime.strptime(data_reserva_str, '%d/%m/%Y %H:%M').replace(tzinfo=pytz.UTC)
+        if objeto.status == 1:
+            movimentacoes = models.Movimentacao.objects.filter(objeto_id=objeto, status=8, reserva__isnull=False).all()
+            if movimentacoes:
+                for mov in movimentacoes:
+                    print(mov.reserva)
+                    print(data_reserva_obj)
+                    print(mov.reserva + timedelta(minutes=tolerancia))
+                    if mov.reserva <= data_reserva_obj <= (mov.reserva + timedelta(minutes=tolerancia)):
+                        tem_reserva = True
+                        break
+                print(tem_reserva)
+            if tem_reserva == False:
+                usuario_id = request.data.get('usuario_id')
+                usuario = models.Usuario.objects.get(id = usuario_id)
+                models.Movimentacao.objects.create(retirada = None,
+                                                   devolucao = None,
+                                                   reserva = data_reserva_obj,
+                                                   objeto_id = objeto,
+                                                   usuario_id = usuario,
+                                                   status = 8)
+                return Response(200)
+        return Response(204)
 
 
 class FiltroMovimentacaoUsuarioServiceView(APIView):

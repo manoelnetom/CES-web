@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'^cancelar_transferir_objeto/', views.CancelarTransferirObjetoServiceView.as_view(), name='cancelar_transferir_objeto'),
     url(r'^listar_transferencias_usuario/', views.ListarTransferenciasUsuarioServiceView.as_view(), name='listar_transferencias_usuario'),
     url(r'^exibir_transferencia/', views.ExibirTransferenciaServiceView.as_view(), name='exibir_transferencia'),
+    url(r'^solicitar_reserva/', views.SolicitarReservaServiceView.as_view(), name='solicitar_reserva'),
 ]
