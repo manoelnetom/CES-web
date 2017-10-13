@@ -109,11 +109,13 @@ class Permissao_Objeto_x_PerfilUsuario(models.Model):
 
 class Transferencia(models.Model):
     id= models.AutoField(primary_key=True, blank=False, null=False)
-    movimentacao_id_origem = models.ForeignKey(Movimentacao, related_name='remetente')
-    movimentacao_id_destino = models.ForeignKey(Movimentacao, related_name='destinatario')
+    movimentacao_id_origem = models.ForeignKey(Movimentacao, related_name='movimentacao_id_origem')
+    movimentacao_id_destino = models.ForeignKey(Movimentacao, related_name='movimentacao_id_destino')
 
     def __str__(self):
-        return str("Transferindo {0} de {1} para {2}").format(self.remetente.objeto_id, self.remetente.usuario_id, self.destinatario.usuario_id)
+        return str("Transferindo {0} de {1} para {2}").format(self.movimentacao_id_origem.objeto_id,
+                                                              self.movimentacao_id_origem.usuario_id,
+                                                              self.movimentacao_id_destino.usuario_id)
 
     class Meta:
         verbose_name = "Transferência"

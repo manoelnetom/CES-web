@@ -188,6 +188,24 @@ class TransferirObjetoServiceView(APIView):
         return Response(204)
 
 
+class ConfirmarTransferirObjetoServiceView(APIView):
+    # permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, format=None):
+        movimentacao_origem_id = request.data.get('movimentacao_origem')
+        movimentacao_origem = models.Movimentacao.objects.get(id=movimentacao_origem_id)
+        movimentacao_origem.status = 7
+        movimentacao_origem.devolucao = datetime.now()
+        movimentacao_origem.save()
+
+        movimentacao_destino_id = request.data.get('movimentacao_destino')
+        movimentacao_destino = models.Movimentacao.objects.get(id=movimentacao_destino_id)
+        movimentacao_destino.status = 2
+        movimentacao_destino.save()
+
+        return Response(200)
+
+
 class FiltroMovimentacaoUsuarioServiceView(APIView):
     # permission_classes = (permissions.IsAuthenticated,)
 
