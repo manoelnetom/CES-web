@@ -18,4 +18,5 @@ urlpatterns = [
     url(r'^detalhe_movimentacao/(?P<movimentacao_id>\d+)', views.DetalheMovimentacaoServiceView.as_view(), name='detalhe_movimentacao'),
     url(r'^filtro_movimentacoes_usuario/', views.FiltroMovimentacaoUsuarioServiceView.as_view(), name='filtro_movimentacao_usuario'),
     url(r'^confirmar_transferir_objeto/', views.ConfirmarTransferirObjetoServiceView.as_view(), name='confirmar_transferir_objeto'),
+    url(r'^cancelar_transferir_objeto/', views.CancelarTransferirObjetoServiceView.as_view(), name='cancelar_transferir_objeto'),
 ]

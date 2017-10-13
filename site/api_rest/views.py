@@ -206,6 +206,26 @@ class ConfirmarTransferirObjetoServiceView(APIView):
         return Response(200)
 
 
+class CancelarTransferirObjetoServiceView(APIView):
+    # permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, format=None):
+        transferencia_id = request.data.get('transferencia_id')
+        transferencia = models.Transferencia.objects.get(id=transferencia_id)
+
+        movimentacao_origem = transferencia.movimentacao_id_origem
+        movimentacao_origem.status = 2
+        movimentacao_origem.devolucao = None
+        movimentacao_origem.save()
+
+        movimentacao_destino = transferencia.movimentacao_id_destino
+        movimentacao_destino.delete()
+
+        transferencia.delete()
+
+        return Response(200)
+
+
 class FiltroMovimentacaoUsuarioServiceView(APIView):
     # permission_classes = (permissions.IsAuthenticated,)
 
