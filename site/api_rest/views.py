@@ -53,7 +53,6 @@ class ObjetoDisponivelServiceView(APIView):
 
     def get(self, request, format=None):
         objetos =  models.Objeto.objects.filter(status=1)
-        reservas = models.Objeto.objects.filter(data)
         movimentacoes = models.Movimentacao.objects.filter(devolucao=None)
         movimentacoes_objetos = []
         objetos_list = []
