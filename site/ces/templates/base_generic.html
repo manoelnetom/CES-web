@@ -22,17 +22,18 @@
         <div class="col-sm-2">
             {% block sidebar %}
             <ul class="sidebar-nav">
-                <li><a href="{% url 'index' %}">Home</a></li>
-                <li><a href="{% url 'objetos' %}">Todos Objetos</a></li>
                 {% if user.is_authenticated %}
                 <li>User: {{ user.get_username }}</li>
-                <li><a href="{% url 'meus-emprestimos' %}">My Borrowed</a></li>
+                <li><a href="{% url 'meus-emprestimos' %}">Meus Empréstimos</a></li>
                 <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>
                 {% else %}
                 <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>
                 {% endif %}
+                {% endblock %}
+                <li><a href="{% url 'index' %}">Home</a></li>
+                <li><a href="#">Todos Objetos</a></li>
             </ul>
-            {% endblock %}
+
         </div>
         <div class="col-sm-10 ">
             {% block content %}{% endblock %}

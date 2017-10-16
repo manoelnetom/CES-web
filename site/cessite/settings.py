@@ -119,4 +119,6 @@ MEDIA_URL="/media/"
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "media")
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
-LOGIN_REDIRECT_URL = '/admin/'
+LOGIN_REDIRECT_URL = '/ces/'
+
+LOGIN_URL = '/accounts/login/'

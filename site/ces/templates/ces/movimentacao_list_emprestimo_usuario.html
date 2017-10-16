@@ -1,0 +1,22 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Objetos emprestados</h1>
+
+    {% if movimentacao_list %}
+    <ul>
+
+      {% for movimentacao in movimentacao_list %}
+      <li class="{% if movimentacao.retirada %}text-sucess{% else %}text-warning">
+        <a href="{% url 'book-detail' movimentacao.objeto.pk %}">{{movimentacao.objeto.nome}}</a>
+          {% if movimentacao.retirada %}
+             {{movimentacao.retirada}}
+          {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+
+    {% else %}
+      <p>Não há objetos emprestados.</p>
+    {% endif %}       
+{% endblock %}
