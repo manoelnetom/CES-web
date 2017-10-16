@@ -35,3 +35,6 @@ class MovimentacaoDeUsuarioListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         return Movimentacao.objects.filter(usuario=self.request.user).order_by('devolucao')
+
+class ObjetoDetailView(generic.DateDetailView):
+    model = Objeto
