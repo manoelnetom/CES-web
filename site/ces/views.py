@@ -15,6 +15,13 @@ def index(request):
     )
 
 
+from django.views import generic
+
+class ObjetoListView(generic.ListView):
+    model = Objeto
+    paginate = 10
+
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 

@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Lista de objetos</h1>
+
+    {% if objeto_list %}
+    <ul>
+
+      {% for objeto in objeto_list %}
+      <li>
+        <a href="{{ book.get_absolute_url }}">{{ objeto.nome }}</a> ({{objeto.tipoObjeto.nome}})
+      </li>
+      {% endfor %}
+
+    </ul>
+    {% else %}
+      <p>Não há objetos para listar.</p>
+    {% endif %}       
+{% endblock %}
