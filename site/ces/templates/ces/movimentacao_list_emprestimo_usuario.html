@@ -7,7 +7,7 @@
     <ul>
 
       {% for movimentacao in movimentacao_list %}
-      <li class="{% if movimentacao.retirada %}text-sucess{% else %}text-warning">
+      <li class="{% if movimentacao.retirada %}text-sucess{% else %}text-warning{%endif%}">
         <a href="{% url 'book-detail' movimentacao.objeto.pk %}">{{movimentacao.objeto.nome}}</a>
           {% if movimentacao.retirada %}
              {{movimentacao.retirada}}
