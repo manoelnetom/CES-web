@@ -8,7 +8,7 @@
 
       {% for objeto in objeto_list %}
       <li>
-        <a href="{{ book.get_absolute_url }}">{{ objeto.nome }}</a> ({{objeto.tipoObjeto.nome}})
+        <a href="{% url 'objeto-detail' pk=objeto.pk %}">{{ objeto.nome }}</a> ({{objeto.tipoObjeto.nome}})
       </li>
       {% endfor %}
 

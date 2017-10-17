@@ -9,10 +9,7 @@
       {% for movimentacao in movimentacao_list %}
         <!--colocar código no models para verificar prazo de entrega-->
       <li class="{% if movimentacao.devolucao %}text-sucess{% else %}text-warning{%endif%}">
-        <a href="{% url 'objeto-detail' %}">{{movimentacao.objeto.nome}}</a>
-          {% if movimentacao.devolucao %}
-             {{movimentacao.devolucao}}
-          {% endif %}
+        <a href="{% url 'objeto-detail' pk=movimentacao.objeto.pk %}">{{movimentacao.objeto.nome}}</a> ({{movimentacao.devolucao}})
       </li>
       {% endfor %}
     </ul>
