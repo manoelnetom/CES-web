@@ -284,6 +284,16 @@ class SolicitarReservaServiceView(APIView):
         return Response(204)
 
 
+class ExibirReservasAbertasUsuarioServiceView(APIView):
+
+    def post(self, request, format=None):
+        usuario_id = request.data.get('usuario_id')
+        usuario = models.Usuario.objects.get(id=usuario_id)
+        movimentacoes =  models.Movimentacao.objects.filter(usuario_id__id=usuario.id, reserva__isnull=False, devolucao__isnull=True)
+        serializer = serializers.MovimentacaoSerializer(movimentacoes, many=True)
+        return Response(serializer.data)
+
+
 class FiltroMovimentacaoUsuarioServiceView(APIView):
     # permission_classes = (permissions.IsAuthenticated,)
 
