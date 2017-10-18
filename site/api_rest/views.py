@@ -53,14 +53,20 @@ class ObjetoDisponivelServiceView(APIView):
 
     def get(self, request, format=None):
         objetos =  models.Objeto.objects.filter(status=1)
-        movimentacoes = models.Movimentacao.objects.filter(devolucao=None)
-        movimentacoes_objetos = []
         objetos_list = []
-        for mov in movimentacoes:
-            movimentacoes_objetos.append(mov.objeto_id)
+
         for obj in objetos:
-            if obj not in movimentacoes_objetos:
+            tem_reserva = False
+            movimentacoes = models.Movimentacao.objects.filter(objeto_id=obj, reserva__isnull=False).all()
+            now = datetime.utcnow().replace(tzinfo=pytz.UTC)
+            if movimentacoes:
+                for mov in movimentacoes:
+                    if mov.reserva <= now <= (mov.reserva + timedelta(minutes=tolerancia)):
+                        tem_reserva = True
+                        break
+            if tem_reserva == False:
                 objetos_list.append(obj)
+
         serializer = serializers.ObjetoSerializer(objetos_list, many=True)
         return Response(serializer.data)
 
@@ -264,13 +270,9 @@ class SolicitarReservaServiceView(APIView):
             movimentacoes = models.Movimentacao.objects.filter(objeto_id=objeto, status=8, reserva__isnull=False).all()
             if movimentacoes:
                 for mov in movimentacoes:
-                    print(mov.reserva)
-                    print(data_reserva_obj)
-                    print(mov.reserva + timedelta(minutes=tolerancia))
                     if mov.reserva <= data_reserva_obj <= (mov.reserva + timedelta(minutes=tolerancia)):
                         tem_reserva = True
                         break
-                print(tem_reserva)
             if tem_reserva == False:
                 usuario_id = request.data.get('usuario_id')
                 usuario = models.Usuario.objects.get(id = usuario_id)
