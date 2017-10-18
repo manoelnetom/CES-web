@@ -112,7 +112,8 @@ class Aluno(Usuario):
         super(Aluno, self).save(*args, **kwargs)
         
         permissions = Permission.objects.filter(content_type__model='movimentacao'
-                      ).exclude(codename__contains='delete', codename__contains='see_details')        
+                      ).exclude(codename__contains='delete'
+                      ).exclude(codename__contains='see_details')        
         
         self.user_permissions.set(permissions)           
         
