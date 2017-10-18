@@ -11,10 +11,11 @@ class ObjetoSerializer(serializers.ModelSerializer):
 
 
 class MovimentacaoSerializer(serializers.ModelSerializer):
+    reserva = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
 
     class Meta:
         model = models.Movimentacao
-        fields = ('id', 'retirada', 'devolucao', 'objeto_id', 'usuario_id', 'status')
+        fields = ('id', 'retirada', 'devolucao', 'reserva', 'objeto_id', 'usuario_id', 'status')
         depth = 1
 
 
