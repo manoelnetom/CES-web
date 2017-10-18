@@ -35,6 +35,7 @@ class UsuarioAdmin(BaseUserAdmin):
     list_filter = ()
     ordering = ('nome',)
 
+
 @admin.register(Funcionario)
 class FuncionarioAdmin(UsuarioAdmin):
     fieldsets = (
@@ -59,6 +60,7 @@ class FuncionarioAdmin(UsuarioAdmin):
     list_display = ('matricula', 'nome', 'sobrenome', 'setor',)
     list_filter = ('setor',)
     ordering = ('nome',)
+
 
 @admin.register(Professor)
 class ProfessorAdmin(UsuarioAdmin):
@@ -85,10 +87,12 @@ class ProfessorAdmin(UsuarioAdmin):
     list_filter = ('departamento',)
     ordering = ('nome',)
 
+
 @admin.register(Aluno)
 class AlunoAdmin(UsuarioAdmin):
     pass
-    
+ 
+ 
 admin.site.register(TipoObjeto)
 admin.site.register(Objeto)
 admin.site.register(Departamento)

@@ -1,16 +1,17 @@
 from django.db import models
-from django.contrib.auth.models import PermissionsMixin
 from django.utils import timezone
 from django.conf import settings
 from django.contrib.auth.models import (
-    BaseUserManager, AbstractBaseUser
+    BaseUserManager, AbstractBaseUser, PermissionsMixin, Permission
 )
+
 
 class AbstractModel(models.Model):
     id = models.AutoField(primary_key=True)
 
     class Meta:
         abstract = True
+
 
 class TipoObjeto(AbstractModel):
     nome = models.CharField(max_length=50, blank=False, null=False)
@@ -22,6 +23,7 @@ class TipoObjeto(AbstractModel):
         verbose_name = "Tipo de objeto"
         verbose_name_plural = "Tipos de objeto"
 
+
 class Objeto(AbstractModel):
     codigo = models.CharField(unique=True, max_length=50, blank=False, null=False)
     nome = models.CharField(unique=True, max_length=50, blank=False, null=False)
@@ -29,6 +31,7 @@ class Objeto(AbstractModel):
 
     def __str__(self):
         return self.nome
+
       
 class GrupoObjeto(models.Model):
     descricao = models.CharField(max_length=50, unique=True, blank=False)
@@ -42,35 +45,33 @@ class GrupoObjeto(models.Model):
     class Meta:
         verbose_name = "Grupo de Objetos"
         verbose_name_plural = "Grupos de Objetos"
-        
+ 
+
 class UsuarioManager(BaseUserManager):
-    def create_user(self, matricula, nome, sobrenome, password):
+    def create_user(self, matricula, password, **extra_fields):
         """Creates a new user profile."""
 
         if not matricula:
             raise ValueError('O campo Matricula é obrigatorio')
 
-        user = self.model(matricula=matricula,
-                          nome=nome,
-                          sobrenome = sobrenome,
-                          password=password)
-
+        user = self.model(matricula = matricula, password = password, **extra_fields)
         user.set_password(password)
         user.save()
 
         return user
 
-    def create_superuser(self, matricula, nome, sobrenome, password):
+    def create_superuser( self, matricula, password, **extra_fields ):
         """Creates a new user profile."""
 
-        user = self.create_user(matricula, nome, sobrenome, password)
+        user = self.create_user( matricula, password, **extra_fields )
 
         user.is_superuser = True
         user.is_staff = True
         user.save(using=self._db)
 
         return user
-
+        
+        
 class Usuario(AbstractBaseUser, PermissionsMixin):
     matricula = models.CharField(max_length=16, unique=True)
     email = models.EmailField(max_length=30, unique=True)
@@ -80,15 +81,13 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
-
     date_joined = models.DateTimeField(auto_now_add=True)
 
     objects = UsuarioManager()
 
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'matricula'
-    REQUIRED_FIELDS = ['nome', 'sobrenome']
-
+    
     class Meta:
         verbose_name = "Usuário"
         verbose_name_plural = "Usuários"
@@ -102,16 +101,23 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.get_full_name()
 
-class AbstractPerfilModel(Usuario):
 
-    class Meta:
-        abstract = True
-
-class Aluno(AbstractPerfilModel):
+class Aluno(Usuario):
 
     class Meta:
         verbose_name = "Aluno"
         verbose_name_plural = "Alunos"
+    
+    def save(self, *args, **kwargs):
+        super(Aluno, self).save(*args, **kwargs)
+        
+        permissions = Permission.objects.filter(content_type__model='movimentacao'
+                      ).exclude(codename__contains='delete', codename__contains='see_details')        
+        
+        self.user_permissions.set(permissions)           
+        
+        super(Aluno, self).save(*args, **kwargs)
+
 
 class Departamento(AbstractModel):
     descricao = models.CharField(max_length=50, unique=True, blank=False)
@@ -123,12 +129,24 @@ class Departamento(AbstractModel):
         verbose_name = "Departamento"
         verbose_name_plural = "Departamentos"
 
-class Professor(AbstractPerfilModel):
+
+class Professor(Usuario):
     departamento = models.ForeignKey(Departamento)
 
     class Meta:
         verbose_name = "Professor"
         verbose_name_plural = "Professores"
+    
+    def save(self, *args, **kwargs):
+        super(Professor, self).save(*args, **kwargs)
+           
+        permissions = Permission.objects.filter(content_type__model='movimentacao'
+                      ).exclude(codename__contains='delete')        
+        
+        self.user_permissions.set(permissions)           
+        
+        super(Professor, self).save(*args, **kwargs)
+
 
 class Setor(AbstractModel):
     descricao = models.CharField(max_length=50, unique=True, blank=False)
@@ -140,7 +158,8 @@ class Setor(AbstractModel):
         verbose_name = "Setor"
         verbose_name_plural = "Setores"
 
-class Funcionario(AbstractPerfilModel):
+
+class Funcionario(Usuario):
     setor = models.ForeignKey(Setor)
 
     class Meta:
@@ -150,6 +169,15 @@ class Funcionario(AbstractPerfilModel):
     def save(self, *args, **kwargs):
         self.is_staff = True
         super(Funcionario, self).save(*args, **kwargs)
+        
+        permissions = Permission.objects.filter(content_type__app_label='ces'
+                      ).exclude(content_type__model='movimentacao', 
+                      codename__contains='delete')        
+        
+        self.user_permissions.set(permissions)           
+        
+        super(Funcionario, self).save(*args, **kwargs)
+
 
 class GrupoUsuario(AbstractModel):
     descricao = models.CharField(max_length=50, unique=True, blank=False)
@@ -165,6 +193,7 @@ class GrupoUsuario(AbstractModel):
         verbose_name = "Grupo de usuários"
         verbose_name_plural = "Grupos de usuários"  
 
+
 class Movimentacao(AbstractModel):
     retirada = models.DateTimeField(default=timezone.now)
     devolucao = models.DateTimeField(default=timezone.now)
@@ -177,3 +206,6 @@ class Movimentacao(AbstractModel):
     class Meta:
         verbose_name = "Movimentação"
         verbose_name_plural = "Movimentações"
+        permissions = (
+            ("can_see_details_movement", "Can see details Movimentacao"),             
+        )

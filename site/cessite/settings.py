@@ -29,8 +29,8 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = (
-    'jet.dashboard', # always before django.contrib.admin
-    'jet', # always before django.contrib.admin
+    'jet.dashboard',  # always before django.contrib.admin
+    'jet',  # always before django.contrib.admin
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,11 +40,12 @@ INSTALLED_APPS = (
     'ces',
     'rest_framework',
 )
-#Theme JET Setting
+
+# Theme JET Setting
 JET_SIDE_MENU_COMPACT = True
 JET_DEFAULT_THEME = 'default'
 
-#Auth
+# Auth
 AUTH_USER_MODEL = "ces.Usuario"
 
 MIDDLEWARE_CLASSES = (
@@ -76,7 +77,6 @@ TEMPLATES = [
     },
 ]
 
-
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
@@ -99,13 +99,36 @@ DATABASES = {
 }
 
 
+# Password validation
+# https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
 LANGUAGE_CODE = 'pt-br'
+
 TIME_ZONE = 'America/Bahia'
+
 USE_I18N = True
+
 USE_L10N = True
+
 USE_TZ = True
 
 
@@ -113,7 +136,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
-
 STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static")
-MEDIA_URL="/media/"
+
+MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "media")
