@@ -107,3 +107,4 @@ admin.site.register(GrupoUsuario)
 admin.site.register(GrupoObjeto)
 
 admin.site.register(Movimentacao)
+
