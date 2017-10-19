@@ -1,0 +1,104 @@
+.navbar-ces {
+    background-color: #1fa67b;
+    border-color: #1fa67b;
+    border-radius: 0;
+    margin-bottom: 0;
+    z-index: 100;
+    background-image: -webkit-linear-gradient(#2fa07c 0%, #1fa67b 100%);
+    background-image: -moz-linear-gradient(#2fa07c 0%, #1fa67b 100%);
+    background-image: -o-linear-gradient(#2fa07c 0%, #1fa67b 100%);
+    background-image: linear-gradient(#2fa07c 0%, #1fa67b 100%);
+    background-repeat: repeat-x;
+ }
+.navbar-ces .navbar-brand {
+    color: #ebf3ef;
+}
+.navbar-ces .navbar-brand, .navbar-ces .navbar-nav>li>a {
+    text-shadow: 0 -1px 0 rgba(175,199,189,.25);
+}
+.navbar-ces .navbar-nav>li>a {
+    color: #ebf3ef;
+}
+.navbar-ces .navbar-collapse, .navbar-ces .navbar-form {
+    border-color:#154e35;
+}
+
+.navbar-ces .navbar-text {
+   color: #ebf3ef;
+   font-style: italic;
+}
+.navbar-ces .navbar-toggle .icon-bar {
+    background-color: #fff;
+}
+.btn-ces{
+  
+}
+.container{
+  width: 100%;
+}
+.form-signin
+{
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+}
+.form-signin .form-signin-heading, .form-signin .checkbox
+{
+    margin-bottom: 10px;
+}
+.form-signin .checkbox
+{
+    font-weight: normal;
+}
+.form-signin .form-control
+{
+    position: relative;
+    font-size: 16px;
+    height: auto;
+    padding: 10px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    
+}
+.form-signin .form-control:focus
+{
+    z-index: 2;
+}
+.form-signin input[type="text"]
+{
+    margin-bottom: -1px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.form-signin input[type="password"]
+{
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+.login-title
+{
+    color: #1fa67b;
+    font-size: 18px;
+    font-weight: 400;
+    margin-top: 60px;
+    padding-left:0;
+    margin-left:0;
+    margin-bottom:20px;
+    border-bottom: 1px solid #1fa67b
+}
+.need-help
+{
+    margin-top: 10px;
+}
+.profile-img
+{
+    width: 96px;
+    height: 96px;
+    margin: 0 auto 10px;
+    display: block;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+}

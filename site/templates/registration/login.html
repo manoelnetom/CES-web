@@ -1,40 +1,36 @@
-{% extends "base_generic.html" %}
+{% extends 'base_generic.html' %}
+{% load i18n %}
 
-{% block content %}
-
-{% if form.errors %}
-<p>Seu usuário e senha não correspondem. Por favor tente novamente.</p>
-{% endif %}
-
-{% if next %}
-    {% if user.is_authenticated %}
-    <p>Your account doesn't have access to this page. To proceed,
-    please login with an account that has access.</p>
-    {% else %}
-    <p>Por favor, faça login.</p>
-    {% endif %}
-{% endif %}
-
-<form method="post" action="{% url 'login' %}" class="form-inline">
-{% csrf_token %}
-
-<div class="form-group">
-  <td>{{ form.username.label_tag }}</td>
-  <td>{{ form.username }}</td>
+{% block container %}
+<div class="row vertical-offset-100">
+    <div class="col-md-4 col-md-offset-4">
+        {% if form.errors %}
+            <div class="alert alert-danger">
+                <p><strong>{% trans "Erro!" %}</strong> {% trans "Please enter a correct username and password. Note that both fields are case-sensitive." %}</p>
+            </div>
+        {% endif %}
+        <div class="login-title">
+           <span>{% trans 'Log in' %}</span>
+        </div>
+      
+        <form action="{% url 'login' %}" method="post" class="form-signin" role="form">{% csrf_token %}            
+            {% for field in form %}
+                {% include 'registration/form_field.html' %}
+            {% endfor %}
+            <div class="form-group">     
+                <button type="submit" class="btn btn-block btn-lg btn-success">{% trans 'Log in' %}</button>   
+            </div>
+           <p class="need-help"><a href="{% url 'password_reset' %}">{% trans "Reset my password" %}</a></p>
+        </form>        
+        <script type="text/javascript">
+            $(function(){
+                $(".alert-message").alert();
+                $('#mainForm').submit(function(){
+                    $('#submit').button('loading');
+                })
+            });
+            document.forms[1].elements[2].focus();
+        </script>
+    </div>
 </div>
-<div class="form-group">
-  <td>{{ form.password.label_tag }}</td>
-  <td>{{ form.password }}</td>
-</div>
-
-<div>
-  <input type="submit" class="btn btn-default" value="login" />
-  <input type="hidden" name="next" value="{{ next }}" />
-</div>
-</form>
-<div class="help-block">
-{# Assumes you setup the password_reset view in your URLconf #}
-<p><a href="{% url 'password_reset' %}">Lost password?</a></p>
-  </div>
-
 {% endblock %}
