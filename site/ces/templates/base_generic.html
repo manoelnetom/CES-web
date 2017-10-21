@@ -38,8 +38,7 @@
             {% if user.is_authenticated %}
             <ul class="nav navbar-nav">                
                 <li><a href="{% url 'index' %}">Home</a></li>
-                <li><a href="{% url 'meus-emprestimos' %}">Meus Empréstimos</a></li>
-                <li><a href="{% url 'objetos' %}">Todos Objetos</a></li>
+                <li><a href="{% url 'reserva' %}">Reservar</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">                
                 <li><p class="navbar-text">{{ user.username }}</p></li>
@@ -54,7 +53,7 @@
             {% endif %}
         </div>
     </div>
-    <div class="container">
+    <div class="container-fluid" style="width:100%">
         {% block container %}
             <div class="content">
                {% block content %}

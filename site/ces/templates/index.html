@@ -1,13 +1,7 @@
 {% extends "base_generic.html" %}
 
-{% block title %}<title>Home</title>{% endblock %}
+{% block title %}<title>Dashboard</title>{% endblock %}
 
 {% block content %}
-<h2>Bem-vindo ao <em>CES-web</em></h2>
-
-<p>Existem a seguinte quantidade de objetos registrados:</p>
-<ul>
-    <li><strong>Objetos:</strong> {{ num_objetos }}</li>
-</ul>
-
+  {% include 'ces/dashboard.html' %}
 {% endblock %}

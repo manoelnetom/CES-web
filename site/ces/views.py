@@ -1,40 +1,37 @@
 from django.shortcuts import render
-from .models import Objeto,Movimentacao
+
+from django.views import generic
+
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+from .models import Objeto, Movimentacao
 
 
 @login_required
 def index(request):
-
-    num_objetos = Objeto.objects.all().count();
+    
+    
+    pendentes = Movimentacao.objects.filter(usuario=request.user, retirada__isnull=False, devolucao__isnull=True)
+    
+    reservados = Movimentacao.objects.filter(usuario=request.user, retirada__isnull=True)
 
     return render(
         request,
         'index.html',
-        context={'num_objetos': num_objetos},
+        context={' reservados':  reservados, 'pendentes' : pendentes },
     )
 
 
-from django.views import generic
-
-class ObjetoListView(generic.ListView):
+class ReservaListView(LoginRequiredMixin, generic.ListView):
+    """
+    Generic class-based view listing books on loan to current user.    """
+   
     model = Objeto
-    paginate = 10
-
-
-from django.contrib.auth.mixins import LoginRequiredMixin
-
-
-class MovimentacaoDeUsuarioListView(LoginRequiredMixin, generic.ListView):
-    """
-    Generic class-based view listing books on loan to current user.
-    """
-    model = Movimentacao
-    template_name = 'ces/movimentacao_list_emprestimo_usuario.html'
-    paginate_by = 10
+    template_name = 'ces/reserva.html'
+    paginate_by = 10    
 
     def get_queryset(self):
-        return Movimentacao.objects.filter(usuario=self.request.user).order_by('devolucao')
+        
+      return Objeto.objects.all()
 
-class ObjetoDetailView(generic.DetailView):
-    model = Objeto

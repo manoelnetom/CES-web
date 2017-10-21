@@ -1,0 +1,109 @@
+{% extends "base_generic.html" %}
+
+{% block container %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">Pendentes</div>
+            <div class="panel-body">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Objeto</th>
+                        <th>Retirada</th>
+                        <th>Até</th> 
+                        <th></th> 
+                    </tr>
+                    </thead>
+                    {% if pendentes %}
+                    {% for item in pendentes %}
+                    <tbody>
+                    <tr>
+                        <td> {{item.objeto.codigo}} - {{ item.objeto.nome }}</td>
+                        <td> {{ item.retirada }}</td>
+                        <td> {{ item.reservaFim }}</td>
+                        <td>
+                            <a href="#" class="btn btn-default" aria-label="Left Align" title="Devolver">
+                                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                     <tr>
+                        <td colspan="4">Não há objetos cadastrados.</td>
+                     <tr>
+                    {% endif %}
+                    <tbody>
+                </table>
+                {% if is_paginated %}
+                <div class="pagination">
+                    <span class="page-links">
+                        {% if page_obj.has_previous %}
+                         <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>
+                         {% endif %}
+                          <span class="page-current">
+                              Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                          </span>
+                          {% if page_obj.has_next %}
+                              <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a>
+                          {% endif %}
+                      </span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 .col-md-offset-2">
+        <div class="panel panel-default">
+            <div class="panel-heading">Reservados</div>
+            <div class="panel-body">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Nome</th>
+                        <th>Tipo</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    {% if objeto_list %}
+                    {% for item in reservados %}
+                    <tbody>
+                    <tr>
+                        <td> {{ objeto.codigo }}</td>
+                        <td> {{ objeto.nome }}</td>
+                        <td> {{ objeto.tipoObjeto.nome }}</td>
+                        <td>
+                            <a href="#" class="btn btn-default" aria-label="Left Align" title="Reservar">
+                                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <p>Não há objetos cadastrados.</p>
+                    {% endif %}
+                    <tbody>
+                </table>
+                {% if is_paginated %}
+                <div class="pagination">
+                <span class="page-links">
+                    {% if page_obj.has_previous %}
+                     <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>
+                     {% endif %}
+                      <span class="page-current">
+                          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                      </span>
+                      {% if page_obj.has_next %}
+                          <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a>
+                      {% endif %}
+                  </span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

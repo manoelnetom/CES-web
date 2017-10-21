@@ -113,7 +113,8 @@ class Aluno(Usuario):
         
         permissions = Permission.objects.filter(content_type__model='movimentacao'
                       ).exclude(codename__contains='delete'
-                      ).exclude(codename__contains='see_details')        
+                      ).exclude(codename__contains='see_details'
+                      ).exclude(codename__contains='back_objeto')
         
         self.user_permissions.set(permissions)           
         
@@ -142,7 +143,8 @@ class Professor(Usuario):
         super(Professor, self).save(*args, **kwargs)
            
         permissions = Permission.objects.filter(content_type__model='movimentacao'
-                      ).exclude(codename__contains='delete')        
+                      ).exclude(codename__contains='delete'
+                      ).exclude(codename__contains='back_objeto')        
         
         self.user_permissions.set(permissions)           
         
@@ -196,8 +198,10 @@ class GrupoUsuario(AbstractModel):
 
 
 class Movimentacao(AbstractModel):
-    retirada = models.DateTimeField(default=timezone.now)
-    devolucao = models.DateTimeField(default=timezone.now)
+    reservaInicio = models.DateTimeField(default=timezone.now)
+    reservaFim = models.DateTimeField(default=timezone.now)
+    retirada = models.DateTimeField(null=True)
+    devolucao = models.DateTimeField(null=True)
     objeto = models.ForeignKey(Objeto)
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
@@ -208,5 +212,6 @@ class Movimentacao(AbstractModel):
         verbose_name = "Movimentação"
         verbose_name_plural = "Movimentações"
         permissions = (
-            ("can_see_details_movement", "Can see details Movimentacao"),             
+            ("can_see_details_movement", "Can see details Movimentacao"),
+            ("can_back_objeto", "Can set give back Objeto"),   
         )
