@@ -213,5 +213,5 @@ class Movimentacao(AbstractModel):
         verbose_name_plural = "Movimentações"
         permissions = (
             ("can_see_details_movement", "Can see details Movimentacao"),
-            ("can_back_objeto", "Can set give back Objeto"),   
+            ("can_mark_returned", "Set Objeto as returned") 
         )

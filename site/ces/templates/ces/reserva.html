@@ -22,7 +22,7 @@
         <td> {{ objeto.nome }}</td>
         <td> {{ objeto.tipoObjeto.nome }}</td>
         <td> 
-          <a href="#" class="btn btn-default" aria-label="Left Align" title="Reservar">
+          <a class="btn btn-default" aria-label="Left Align"  href="{% url 'fazer_reserva' objeto.id %}" title="Reservar">
               <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
           </a>
         </td>
@@ -48,4 +48,6 @@
       </span>
     </div>
     {% endif %}
+    
+ 
 {% endblock %}
