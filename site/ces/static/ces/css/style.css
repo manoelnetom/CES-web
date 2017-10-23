@@ -30,7 +30,8 @@
 .navbar-ces .navbar-toggle .icon-bar {
     background-color: #fff;
 }
-.btn-ces{
+.panel-lg .panel-heading{
+    height: 50%;
   
 }
 .container{

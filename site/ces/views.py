@@ -15,10 +15,10 @@ from .models import Objeto, Movimentacao
 @login_required
 def index(request):
     
+    print(request.user.matricula)
+    pendentes = Movimentacao.objects.filter(usuario__matricula=request.user.matricula, retirada__isnull=False, devolucao__isnull=True)
     
-    pendentes = Movimentacao.objects.filter(usuario=request.user, retirada__isnull=False, devolucao__isnull=True)
-    
-    reservados = Movimentacao.objects.filter(usuario=request.user, retirada__isnull=True)
+    reservados = Movimentacao.objects.filter(usuario__matricula=request.user.matricula, retirada__isnull=True)
 
     return render(
         request,
