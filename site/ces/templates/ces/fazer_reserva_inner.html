@@ -1,0 +1,8 @@
+  <form id="item_reserva_form" action="{% url 'fazer_reserva' objeto.id %}" method="post" class="form" role="form">{% csrf_token %}
+  <div class="row">
+    {% for field in form %}
+        {% include 'ces/form_field.html' %}
+    {% endfor %}
+    <button type="submit" class="btn btn-submit col-md-offset-2">Reservar</button>
+  </div>
+ <form

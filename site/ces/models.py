@@ -32,20 +32,34 @@ class Objeto(AbstractModel):
     def __str__(self):
         return self.nome
 
-      
+    class Meta:
+        verbose_name = "Objeto"
+        verbose_name_plural = "Objetos"
+
+    def get_status(self):
+       movimentacoes = self.movimentacao_set.filter(retirada_isnull=True).order_by('reservaFim');
+       if(bool(movimentacoes)):
+           return "reservado"
+       else:
+           movimentacoes = self.movimentacao_set.filter(retirada_isnull=False, devolucao__isnull=True).order_by('reservaFim');
+           if(bool(movimentacoes)):
+               return "ocupado"
+       return "livre"
+
+
 class GrupoObjeto(models.Model):
     descricao = models.CharField(max_length=50, unique=True, blank=False)
     objetos = models.ManyToManyField(Objeto)
     dataCriacao = models.DateTimeField(auto_now_add=True)
     ativo = models.BooleanField(default=True)
-    
+
     def __str__(self):
         return self.descricao
 
     class Meta:
         verbose_name = "Grupo de Objetos"
         verbose_name_plural = "Grupos de Objetos"
- 
+
 
 class UsuarioManager(BaseUserManager):
     def create_user(self, matricula, password, **extra_fields):
@@ -70,8 +84,8 @@ class UsuarioManager(BaseUserManager):
         user.save(using=self._db)
 
         return user
-        
-        
+
+
 class Usuario(AbstractBaseUser, PermissionsMixin):
     matricula = models.CharField(max_length=16, unique=True)
     email = models.EmailField(max_length=30, unique=True)
@@ -87,7 +101,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'matricula'
-    
+
     class Meta:
         verbose_name = "Usuário"
         verbose_name_plural = "Usuários"
@@ -107,17 +121,17 @@ class Aluno(Usuario):
     class Meta:
         verbose_name = "Aluno"
         verbose_name_plural = "Alunos"
-    
+
     def save(self, *args, **kwargs):
         super(Aluno, self).save(*args, **kwargs)
-        
+
         permissions = Permission.objects.filter(content_type__model='movimentacao'
                       ).exclude(codename__contains='delete'
                       ).exclude(codename__contains='see_details'
                       ).exclude(codename__contains='back_objeto')
-        
-        self.user_permissions.set(permissions)           
-        
+
+        self.user_permissions.set(permissions)
+
         super(Aluno, self).save(*args, **kwargs)
 
 
@@ -138,16 +152,16 @@ class Professor(Usuario):
     class Meta:
         verbose_name = "Professor"
         verbose_name_plural = "Professores"
-    
+
     def save(self, *args, **kwargs):
         super(Professor, self).save(*args, **kwargs)
-           
+
         permissions = Permission.objects.filter(content_type__model='movimentacao'
                       ).exclude(codename__contains='delete'
-                      ).exclude(codename__contains='back_objeto')        
-        
-        self.user_permissions.set(permissions)           
-        
+                      ).exclude(codename__contains='back_objeto')
+
+        self.user_permissions.set(permissions)
+
         super(Professor, self).save(*args, **kwargs)
 
 
@@ -172,19 +186,19 @@ class Funcionario(Usuario):
     def save(self, *args, **kwargs):
         self.is_staff = True
         super(Funcionario, self).save(*args, **kwargs)
-        
+
         permissions = Permission.objects.filter(content_type__app_label='ces'
-                      ).exclude(content_type__model='movimentacao', 
-                      codename__contains='delete')        
-        
-        self.user_permissions.set(permissions)           
-        
+                      ).exclude(content_type__model='movimentacao',
+                      codename__contains='delete')
+
+        self.user_permissions.set(permissions)
+
         super(Funcionario, self).save(*args, **kwargs)
 
 
 class GrupoUsuario(AbstractModel):
     descricao = models.CharField(max_length=50, unique=True, blank=False)
-    usuarios = models.ManyToManyField(settings.AUTH_USER_MODEL)  
+    usuarios = models.ManyToManyField(settings.AUTH_USER_MODEL)
     acessos = models.ManyToManyField(GrupoObjeto)
     dataCriacao = models.DateTimeField(auto_now_add=True)
     ativo = models.BooleanField(default=True)
@@ -194,7 +208,7 @@ class GrupoUsuario(AbstractModel):
 
     class Meta:
         verbose_name = "Grupo de usuários"
-        verbose_name_plural = "Grupos de usuários"  
+        verbose_name_plural = "Grupos de usuários"
 
 
 class Movimentacao(AbstractModel):
@@ -213,5 +227,5 @@ class Movimentacao(AbstractModel):
         verbose_name_plural = "Movimentações"
         permissions = (
             ("can_see_details_movement", "Can see details Movimentacao"),
-            ("can_mark_returned", "Set Objeto as returned") 
+            ("can_mark_returned", "Set Objeto as returned")
         )
