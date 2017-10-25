@@ -16,7 +16,6 @@ from .models import Objeto, Movimentacao, GrupoObjeto
 def index(request):
     
     pendentes = Movimentacao.objects.filter(usuario__matricula=request.user.matricula ).exclude(retirada__isnull=True).exclude(devolucao__isnull=False)
-    
     reservados = Movimentacao.objects.filter(usuario__matricula=request.user.matricula).exclude(retirada__isnull=False)
 
     return render(
@@ -28,7 +27,7 @@ def index(request):
 
 class ReservaListView(LoginRequiredMixin, generic.ListView):
     """
-    Generic class-based view listing books on loan to current user.    """
+    Generic class-based view listing ojects on loan to current user.    """
    
     model = Objeto
     template_name = 'ces/reserva.html'
@@ -36,7 +35,8 @@ class ReservaListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         
-      return Objeto.objects.filter(grupoobjeto__in=GrupoObjeto.objects.filter(grupousuario__usuarios__matricula=self.request.user.matricula))
+         return Objeto.objects.filter(grupoobjeto__in=GrupoObjeto.objects
+                              .filter(grupousuario__usuarios__matricula=self.request.user.matricula))
 
 
 class FazerReservaView(generic.CreateView):

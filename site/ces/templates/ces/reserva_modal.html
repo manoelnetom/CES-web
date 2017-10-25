@@ -1,4 +1,4 @@
-  <div id="myModal" class="modal fade" role="dialog">
+ <div id="myModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
     <form id="item_reserva_form" action="{% url 'fazer_reserva' objeto.id %}" method="post" class="form" role="form">{% csrf_token %}  
     <!-- Modal content-->
@@ -24,7 +24,6 @@
         <script>
             /*eslint-env jquery */
             jQuery('.modal-content .calendar').datepicker({ dateFormat: "yy-mm-dd" });
-
                 var form_options = {
                     target: '#modal',
                     success: function() {  }
@@ -34,5 +33,3 @@
         </div>
     </div>
     
-    
- 
