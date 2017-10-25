@@ -1,0 +1,82 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+   <div class="page-header">
+        <h1>Reserva</h1>
+   </div>
+  
+  <table class="table table-hover table-bordered">  
+    <thead>
+     <tr>
+        <th>Código</th>
+        <th>Nome</th>
+        <th>Tipo</th>
+        <th></th>
+     </tr>
+     </thead>
+   {% if objeto_list %}
+   {% for objeto in objeto_list %}    
+     <tbody>
+     <tr>
+        <td> {{ objeto.codigo }}</td>
+        <td> {{ objeto.nome }}</td>
+        <td> {{ objeto.tipoObjeto.nome }}</td>
+        <td> 
+          <a class="btn btn-default" aria-label="Left Align"  href="{% url 'reserva-new' objeto.id %}" title="Reservar">
+              <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+          </a>
+      </td>
+    </tr>
+    {% endfor %} {% else %}
+    <p>Não há objetos cadastrados.</p>
+    {% endif %}
+    <tbody>
+</table>
+{% if is_paginated %}
+<div class="pagination">
+  <span class="page-links">
+        {% if page_obj.has_previous %}
+         <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>
+         {% endif %}
+          <span class="page-current">
+              Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+          </span> {% if page_obj.has_next %}
+  <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a> {% endif %}
+  </span>
+</div>
+{% endif %}
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Reservar</h4>
+      </div>
+
+      <div class="modal-body">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+
+    <script>
+      /*eslint-env jquery */
+      jQuery('.modal-content .calendar').datepicker({
+        dateFormat: "yy-mm-dd"
+      });
+
+      var form_options = {
+        target: '#modal',
+        success: function() {}
+      }
+      $('#item_reserva_form').ajaxForm(form_options);
+    </script>
+  </div>
+</div>
+{% endblock %}

@@ -25,12 +25,12 @@ def index(request):
     )
 
 
-class ReservaListView(LoginRequiredMixin, generic.ListView):
+class FazerReservaListView(LoginRequiredMixin, generic.ListView):
     """
     Generic class-based view listing ojects on loan to current user.    """
    
     model = Objeto
-    template_name = 'ces/reserva.html'
+    template_name = 'ces/fazer_reserva.html'
     paginate_by = 10    
 
     def get_queryset(self):
@@ -39,12 +39,12 @@ class ReservaListView(LoginRequiredMixin, generic.ListView):
                               .filter(grupousuario__usuarios__matricula=self.request.user.matricula))
 
 
-class FazerReservaView(generic.CreateView):
+class ReservaCreateView(generic.CreateView):
     model = Movimentacao
     
     fields = ['reservaInicio', 'reservaFim']
     
-    template_name = 'ces/reserva_modal.html'
+    template_name = 'ces/reserva.html'
 
     def dispatch(self, *args, **kwargs):       
         self.objeto_id =  kwargs['pk']
