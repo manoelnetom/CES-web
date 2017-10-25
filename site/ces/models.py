@@ -1,8 +1,25 @@
+from fontawesome.fields import IconField
+
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser, PermissionsMixin, Permission
+)
+
+
+STATUS_MOVIMENTACAO = (
+    (1, 'Solicitado Retirada'),
+    (2, 'Emprestado'),
+    (3, 'Solicitado Devolução'),
+    (4, 'Devolvido'),
+    (8, 'Solicitado Reserva')
+)
+
+STATUS_OBJETO = (
+    (1, 'Disponível'),
+    (2, 'Indisponível'),
+    (3, 'Pendente'),
 )
 
 
@@ -15,6 +32,7 @@ class AbstractModel(models.Model):
 
 class TipoObjeto(AbstractModel):
     nome = models.CharField(max_length=50, blank=False, null=False)
+    icone = IconField ()    
 
     def __str__(self):
         return self.nome
@@ -28,6 +46,7 @@ class Objeto(AbstractModel):
     codigo = models.CharField(unique=True, max_length=50, blank=False, null=False)
     nome = models.CharField(unique=True, max_length=50, blank=False, null=False)
     tipoObjeto = models.ForeignKey(TipoObjeto)
+    status = models.IntegerField(choices=STATUS_OBJETO, default=1)
 
     def __str__(self):
         return self.nome
@@ -35,17 +54,7 @@ class Objeto(AbstractModel):
     class Meta:
         verbose_name = "Objeto"
         verbose_name_plural = "Objetos"
-
-    def get_status(self):
-       movimentacoes = self.movimentacao_set.filter(retirada_isnull=True).order_by('reservaFim');
-       if(bool(movimentacoes)):
-           return "reservado"
-       else:
-           movimentacoes = self.movimentacao_set.filter(retirada_isnull=False, devolucao__isnull=True).order_by('reservaFim');
-           if(bool(movimentacoes)):
-               return "ocupado"
-       return "livre"
-
+        
 
 class GrupoObjeto(models.Model):
     descricao = models.CharField(max_length=50, unique=True, blank=False)
@@ -128,7 +137,7 @@ class Aluno(Usuario):
         permissions = Permission.objects.filter(content_type__model='movimentacao'
                       ).exclude(codename__contains='delete'
                       ).exclude(codename__contains='see_details'
-                      ).exclude(codename__contains='back_objeto')
+                      ).exclude(codename__contains='can_mark')
 
         self.user_permissions.set(permissions)
 
@@ -158,7 +167,7 @@ class Professor(Usuario):
 
         permissions = Permission.objects.filter(content_type__model='movimentacao'
                       ).exclude(codename__contains='delete'
-                      ).exclude(codename__contains='back_objeto')
+                      ).exclude(codename__contains='can_mark')
 
         self.user_permissions.set(permissions)
 
@@ -186,11 +195,16 @@ class Funcionario(Usuario):
     def save(self, *args, **kwargs):
         self.is_staff = True
         super(Funcionario, self).save(*args, **kwargs)
-
-        permissions = Permission.objects.filter(content_type__app_label='ces'
-                      ).exclude(content_type__model='movimentacao',
-                      codename__contains='delete')
-
+        if(self.is_staff) :
+          permissions = Permission.objects.filter(content_type__app_label='ces'
+                       ).exclude(content_type__model='movimentacao',
+                       codename__contains='delete')
+        else :          
+          permissions = Permission.objects.filter(content_type__model='movimentacao'
+              ).exclude(codename__contains='delete'
+              ).exclude(codename__contains='see_details'
+              ).exclude(codename__contains='can_mark')
+          
         self.user_permissions.set(permissions)
 
         super(Funcionario, self).save(*args, **kwargs)
@@ -218,6 +232,7 @@ class Movimentacao(AbstractModel):
     devolucao = models.DateTimeField(null=True)
     objeto = models.ForeignKey(Objeto)
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    status = models.IntegerField(choices=STATUS_MOVIMENTACAO, default=0, blank=True)
 
     def __str__(self):
         return str(self.id)
@@ -226,6 +241,7 @@ class Movimentacao(AbstractModel):
         verbose_name = "Movimentação"
         verbose_name_plural = "Movimentações"
         permissions = (
-            ("can_see_details_movement", "Can see details Movimentacao"),
+            ("can_see_details", "Can see details Movimentacao"),
+            ("can_mark_retired", "Set Objeto as retired"),
             ("can_mark_returned", "Set Objeto as returned")
         )
