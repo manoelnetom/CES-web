@@ -45,7 +45,7 @@ class GrupoObjeto(models.Model):
     class Meta:
         verbose_name = "Grupo de Objetos"
         verbose_name_plural = "Grupos de Objetos"
- 
+
 
 class UsuarioManager(BaseUserManager):
     def create_user(self, matricula, password, **extra_fields):

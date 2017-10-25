@@ -9,21 +9,20 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.template.loader import render_to_string
 
-from .models import Objeto, Movimentacao
+from .models import Objeto, Movimentacao, GrupoObjeto
 
 
 @login_required
 def index(request):
     
-    print(request.user.matricula)
-    pendentes = Movimentacao.objects.filter(usuario__matricula=request.user.matricula, retirada__isnull=False, devolucao__isnull=True)
+    pendentes = Movimentacao.objects.filter(usuario__matricula=request.user.matricula ).exclude(retirada__isnull=True).exclude(devolucao__isnull=False)
     
-    reservados = Movimentacao.objects.filter(usuario__matricula=request.user.matricula, retirada__isnull=True)
+    reservados = Movimentacao.objects.filter(usuario__matricula=request.user.matricula).exclude(retirada__isnull=False)
 
     return render(
         request,
         'index.html',
-        context={' reservados':  reservados, 'pendentes' : pendentes },
+        context={'reservados':  reservados, 'pendentes' : pendentes },
     )
 
 
@@ -37,7 +36,7 @@ class ReservaListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         
-      return Objeto.objects.all()
+      return Objeto.objects.filter(grupoobjeto__in=GrupoObjeto.objects.filter(grupousuario__usuarios__matricula=self.request.user.matricula))
 
 
 class FazerReservaView(generic.CreateView):
