@@ -39,7 +39,7 @@ class FazerReservaListView(LoginRequiredMixin, generic.ListView):
                               .filter(grupousuario__usuarios__matricula=self.request.user.matricula))
 
 
-class ReservaCreateView(generic.CreateView):
+class ReservaCreateView(LoginRequiredMixin, generic.CreateView):
     model = Movimentacao
     
     fields = ['reservaInicio', 'reservaFim']
