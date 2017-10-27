@@ -53,13 +53,11 @@
             {% endif %}
         </div>
     </div>
+     {% block titlepage %}{% endblock %}   
     <div class="container-fluid" style="width:100%">
         {% block container %}
             <div class="content">
                {% block content %}
-                <div class="page-header">
-                    <h1>CES web</h1>
-                </div>
                {% endblock %}
             </div>
         {% endblock %}

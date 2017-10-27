@@ -49,10 +49,10 @@ class ReservaCreateView(generic.CreateView):
     def dispatch(self, *args, **kwargs):       
         self.objeto_id =  kwargs['pk']
         
-        return super(FazerReservaView, self).dispatch(*args, **kwargs)
+        return super(ReservaCreateView, self).dispatch(*args, **kwargs)
         
     def get_context_data(self, **kwargs):
-        context = super(FazerReservaView, self).get_context_data(**kwargs)
+        context = super(ReservaCreateView, self).get_context_data(**kwargs)
         objeto = get_object_or_404(Objeto, pk=self.objeto_id)
         context['objeto'] = objeto
 
@@ -64,5 +64,5 @@ class ReservaCreateView(generic.CreateView):
         form.instance.usuario=self.request.user
         form.save()
         
-        return HttpResponse(render_to_string('ces/reserva_modal_sucess.html', {'objeto': objeto}))
+        return HttpResponse(render_to_string('ces/reserva.html', {'objeto': objeto}))
         

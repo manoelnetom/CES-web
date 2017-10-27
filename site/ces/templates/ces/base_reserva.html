@@ -1,0 +1,23 @@
+{% extends "base_generic.html" %}
+
+{% block container %} 
+<div class="row">
+  <div class="col-lg-3">
+    {% block sidebar %}
+    <div class="list-group">
+      <h3>
+        Categorias
+      </h3>
+      <ul>
+        <li>Chave</li>
+        <li>Pincel</li>
+        <li>Dado</li>
+      </ul>
+    </div>
+    {% endblock %}
+  </div>
+  <div class="col-lg-9">
+    {% block area %}
+    {% endblock %}
+</div>
+{% endblock %}
