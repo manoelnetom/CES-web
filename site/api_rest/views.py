@@ -337,3 +337,11 @@ class FiltroMovimentacaoUsuarioServiceView(APIView):
 
         serializer = serializers.MovimentacaoSerializer(movimentacoes, many=True)
         return Response(serializer.data)
+
+
+class ObjectStatusListServiceView(APIView):
+
+    def get(self, request, format=None):
+        status = models.STATUS_OBJETO
+        status_list = [dict(valor=s[0], descricao=s[1]) for s in status]
+        return Response(status_list, 200)

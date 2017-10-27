@@ -24,4 +24,5 @@ urlpatterns = [
     url(r'^solicitar_reserva/', views.SolicitarReservaServiceView.as_view(), name='solicitar_reserva'),
     url(r'^exibir_reservas_usuario/', views.ExibirReservasAbertasUsuarioServiceView.as_view(), name='exibir_reservas_usuario'),
     url(r'^cancelar_reserva/', views.CancelarReservaServiceView.as_view(), name='cancelar_reserva'),
+    url(r'^status_objeto/', views.ObjectStatusListServiceView.as_view(), name='status_objeto'),    
 ]
