@@ -34,8 +34,8 @@ class FazerReservaListView(LoginRequiredMixin, generic.ListView):
     paginate_by = 10    
 
     def get_queryset(self):
-         objetos_acessiveis = GrupoObjeto.objects.filter(grupousuario__usuarios__matricula=self.request.user.matricula).values('objetos__id')
-        objetos_pendentes_ou_reservados = Movimentacao.objects.filter(usuario__matricula=self.request.user.matricula
+        objetos_acessiveis = GrupoObjeto.objects.filter(grupousuario__usuarios__matricula=self.request.user.matricula).values('objetos__id')
+        objetos_pendentes_ou_reservados = Movimentacao.objects.filter(usuario__matricula=self.request.user.matricula 
                                                                      ).exclude(devolucao__isnull=False).values('objeto_id')
           
         return Objeto.objects.filter(id__in=objetos_acessiveis).exclude(id__in=objetos_pendentes_ou_reservados).order_by('nome')
