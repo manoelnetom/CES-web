@@ -9,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.template.loader import render_to_string
 
-from .models import Objeto, Movimentacao, GrupoObjeto
+from .models import Objeto, Movimentacao, GrupoObjeto, STATUS_OBJETO
 
 
 @login_required
@@ -34,9 +34,11 @@ class FazerReservaListView(LoginRequiredMixin, generic.ListView):
     paginate_by = 10    
 
     def get_queryset(self):
-        
-         return Objeto.objects.filter(grupoobjeto__in=GrupoObjeto.objects
-                              .filter(grupousuario__usuarios__matricula=self.request.user.matricula))
+         objetos_acessiveis = GrupoObjeto.objects.filter(grupousuario__usuarios__matricula=self.request.user.matricula).values('objetos__id')
+        objetos_pendentes_ou_reservados = Movimentacao.objects.filter(usuario__matricula=self.request.user.matricula
+                                                                     ).exclude(devolucao__isnull=False).values('objeto_id')
+          
+        return Objeto.objects.filter(id__in=objetos_acessiveis).exclude(id__in=objetos_pendentes_ou_reservados).order_by('nome')
 
 
 class ReservaCreateView(LoginRequiredMixin, generic.CreateView):
@@ -62,7 +64,10 @@ class ReservaCreateView(LoginRequiredMixin, generic.CreateView):
         objeto = Objeto.objects.get(id=self.objeto_id)
         form.instance.objeto=objeto
         form.instance.usuario=self.request.user
+        form.instance.status = 8
         form.save()
+        objeto.status = 3
+        objeto.save()
         
         return HttpResponse(render_to_string('ces/reserva.html', {'objeto': objeto}))
         
