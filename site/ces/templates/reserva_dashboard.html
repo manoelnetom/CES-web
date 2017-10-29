@@ -1,0 +1,50 @@
+{% extends "base_generic.html" %} {% block titlepage %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-danger panel-lg">
+            <div class="panel-heading">Itens Disponíveis</div>
+            <div class="panel-body">
+              <h1>Itens que estarão disponivel para o o usuario</h1>
+                {% if is_paginated %}
+                <div class="pagination">
+                    <span class="page-links">
+                        {% if page_obj.has_previous %}
+                         <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>
+                         {% endif %}
+                          <span class="page-current">
+                              Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                          </span>
+                          {% if page_obj.has_next %}
+                              <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a>
+                          {% endif %}
+                      </span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 .col-md-offset-2">
+        <div class="panel panel-info panel-lg">
+            <div class="panel-heading">Itens em Sua Posse</div>
+            <div class="panel-body">
+              <h1>Itens que estarão em posse do usuário</h1>
+                {% if is_paginated %}
+                <div class="pagination">
+                <span class="page-links">
+                    {% if page_obj.has_previous %}
+                     <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>
+                     {% endif %}
+                      <span class="page-current">
+                          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                      </span>
+                      {% if page_obj.has_next %}
+                          <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a>
+                      {% endif %}
+                  </span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

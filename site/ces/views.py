@@ -20,7 +20,7 @@ def index(request):
 
     return render(
         request,
-        'index.html',
+        'reserva_dashboard.html',
         context={'reservados':  reservados, 'pendentes' : pendentes },
     )
 
