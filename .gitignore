@@ -109,5 +109,5 @@ env/
 
 # sqlite database
 
-site/db.sqlite3
+#site/db.sqlite3
 
