@@ -150,6 +150,8 @@ class MovimentacaoAdmin(admin.ModelAdmin):
     search_fields = ('objeto__nome', 'usuario__nome', 'objeto__tipoObjeto__nome')
     ordering = ('objeto__nome',)
 
+     actions = ['confirmar_retirada', 'confirmar_devolucao']
+
     def confirmar_retirada(self, request, queryset):
         queryset.update(status='2', retirada=timezone.now)
     confirmar_retirada.short_description = "Marcar objeto como emprestado"
