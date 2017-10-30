@@ -8,8 +8,8 @@
     <meta name="description" content="Sistema de Retirada de Objetos">
     {% block extrahead %}{% endblock %}
     <!-- Le styles -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">   
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"> 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
     <!-- Add additional CSS in static file -->
     {% load static %}
     <link rel="stylesheet" href="{% static 'ces/css/style.css' %}">
@@ -38,11 +38,11 @@
       </div>
       <div class="collapse navbar-collapse">
         {% if user.is_authenticated %}
-        <ul class="nav navbar-nav">                
-            <li><a href="{% url 'index' %}">Home</a></li>
+        <ul class="nav navbar-nav">
+            <li><a href="{% url 'index' %}">Início</a></li>
             <li><a href="{% url 'fazer_reserva' %}">Fazer reserva</a></li>
         </ul>
-        <ul class="nav navbar-nav navbar-right">                
+        <ul class="nav navbar-nav navbar-right">
             <li><p class="navbar-text">{% trans "Welcome" %}, {{ user.nome }}</p></li>
             <li><a href="{% url 'password_change' %}">{% trans "Change password" %}</a></li>
             <li><a href="{% url 'logout' %}">{% trans 'Log out' %}</a></li>
@@ -61,11 +61,13 @@
     </div>
     {% endfor %} {% endblock %}
     {% if user.is_authenticated %}
-      {% block breadcrumbs %}
-      <div class="breadcrumbs">
+
+      <div class="breadcrumb">
+        {% block breadcrumb %}
         <a href="{% url 'index' %}">{% trans 'Home' %}</a> {% if title %} &rsaquo; {{ title }}{% endif %}
+        {% endblock %}
       </div>
-      {% endblock %}
+
     {% endif %}
     <div class="container-fluid" style="width:100%">
       {% block container %}

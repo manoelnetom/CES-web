@@ -1,15 +1,11 @@
 
-<div class="list-group nav nav-stacked affix">
+<div class="list-group nav nav-stacked">
     <h3>
         CATEGORIAS
     </h3>
     <ul>
-        {% for category in categorias%}
-        <li><a href="{% url 'fazer_reserva' tipo='1' %}">Chave</a></li>
-        <li>Pincel</li>
-        <li>Dado</li>
+        {% for category in categories %}
+          <li class="group-item {% if current_tipo_id == category.id %} active {% endif %}"><a class="list-group-item" href="{% url 'fazer_reserva' tipo=category.id %}">{{category.nome}}</a></li>
+        {% endfor %}
     </ul>
 </div>
-</div>
-
- 

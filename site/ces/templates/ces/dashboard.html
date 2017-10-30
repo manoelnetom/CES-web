@@ -1,8 +1,3 @@
-{% extends "base_generic.html" %}
-
-{% block title %}Dashboard | {{ block.super }}{% endblock %}
-
-{% block container %}
 <div class="row">
     <div class="col-md-6">
         <div class="panel panel-danger panel-lg">
@@ -13,8 +8,8 @@
                     <tr>
                         <th>Objeto</th>
                         <th>Retirado em</th>
-                        <th>Prazo para entrega</th> 
-                        <th></th> 
+                        <th>Prazo para entrega</th>
+                        <th></th>
                     </tr>
                     </thead>
                     {% if pendentes %}
@@ -23,7 +18,7 @@
                     <tr>
                         <td> {{item.objeto.codigo}} - {{ item.objeto.nome }}</td>
                         <td> {{ item.retirada }}</td>
-                        <td> {{ item.reservaFim }}</td>                   
+                        <td> {{ item.reservaFim }}</td>
                         <td>
                             <a href="#" class="btn btn-default" aria-label="Left Align" title="Devolver">
                                 <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
@@ -105,5 +100,3 @@
         </div>
     </div>
 </div>
-
-{% endblock %}

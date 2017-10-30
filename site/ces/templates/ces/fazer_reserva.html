@@ -1,32 +1,50 @@
-{% extends "ces/base_reserva.html" %} 
+{% extends "ces/base_reserva.html" %}
+{% load custom_tags %}
 
 {% block title %} Fazer Reserva | {{ block.super }} {% endblock %}
 
+
+{% block breadcrumb %}
+{{ block.super }} / <a href="{% url 'fazer_reserva' %}">Fazer Reserva</a>
+{% if current_tipo %}
+ / <a href="{% url 'fazer_reserva' tipo=current_tipo.id %}">{{current_tipo.nome}}</a>
+{% endif %}
+{% endblock %}
+
+
 {% block area %}
-<div class="col-lg-9">
 {% if objeto_list %}
 {% for objeto in objeto_list %}
-<div class="col-sm-4 col-lg-4 col-md-4">
+<div class="col-sm-4 col-md-4">
     <div class="thumbnail">
-        {{objeto.tipoObjeto.icone.as_html}}
+        <span title="{{objeto.tipoObjeto.nome}}">{{objeto.tipoObjeto.icone.as_html}}</span>
+        <p class="pull-right" >{{objeto.get_status_display}}</p>
+        <hr>
         <div class="caption">
-            <h4 class="pull-right">{{objeto.status}}</h4>
-            <h4><a href="{% url 'reserva_new' objeto.id %}">{{ objeto.codigo }}</a></h4>
-            <p>{{ objeto.nome }}</p>
+            <h4><a href="{% url 'reserva_new' objeto.id %}">{{ objeto.nome }}</a></h4>
+            <p class="label">Código</p>
+            <p class="campo">{{ objeto.codigo }}</p>
         </div>
-        <div class="ratings">
+        <hr>
+        <div class="footer">
             <p>
               <a href="{% url 'reserva_new' objeto.id %}">
-                  ver detalhes
+                  {% if objeto.status != 1 %}
+                    ver detalhes
+                  {% else %}
+                    Reservar
+                  {% endif %}
                </a>
             </p>
         </div>
     </div>
 </div>
- {% endfor %}
+{% endfor %}
 {% else %}
-    <p>Não há objetos cadastrados.</p>
- {% endif %}
+<div>
+  <p>Não há objetos cadastrados.</p>
+</div>
+{% endif %}
 {% if is_paginated %}
 <div class="pagination">
   <span class="page-links">
@@ -38,8 +56,6 @@
           </span> {% if page_obj.has_next %}
   <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a> {% endif %}
   </span>
-</div>
-</div>
+  </div>
 {% endif %}
-</div>
 {% endblock %}

@@ -1,6 +1,6 @@
 {% extends "base_generic.html" %}
 
-{% block title %}<title>Dashboard</title>{% endblock %}
+{% block title %}Dashboard | {{ block.super }}{% endblock %}
 
 {% block content %}
   {% include 'ces/dashboard.html' %}
