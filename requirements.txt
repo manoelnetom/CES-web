@@ -1,5 +1,4 @@
 Django==1.11.5
 bootstrap-admin==0.3.7.1
-django-jet==1.0.6
 djangorestframework==3.6.4
 django-fontawesome

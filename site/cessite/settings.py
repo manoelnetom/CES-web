@@ -29,21 +29,21 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = (
-    'jet.dashboard',  # always before django.contrib.admin
-    'jet',  # always before django.contrib.admin
+    'boostrap_admin'
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    #apps
     'ces',
+    #libs
     'rest_framework',
 )
 
-# Theme JET Setting
-JET_SIDE_MENU_COMPACT = True
-JET_DEFAULT_THEME = 'default'
+# Theme Boostrap Admin Setting
+BOOTSTRAP_ADMIN_SIDEBAR_MENU = True
 
 # Auth
 AUTH_USER_MODEL = "ces.Usuario"
@@ -56,7 +56,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.security.SecurityMiddleware',    
+    'django.middleware.security.SecurityMiddleware',
 )
 
 ROOT_URLCONF = 'cessite.urls'
