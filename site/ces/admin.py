@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils import timezone
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 from .forms import UsuarioNovoForm, UsuarioEdicaoForm
@@ -150,9 +151,9 @@ class MovimentacaoAdmin(admin.ModelAdmin):
     ordering = ('objeto__nome',)
 
     def confirmar_retirada(self, request, queryset):
-        queryset.update(status='2')
+        queryset.update(status='2', retirada=timezone.now)
     confirmar_retirada.short_description = "Marcar objeto como emprestado"
 
     def confirmar_devolucao(self, request, queryset):
-        queryset.update(status='4')
+        queryset.update(status='4',devolucao=timezone.now)
     confirmar_devolucao.short_description = "Marcar objeto como devolvido"
