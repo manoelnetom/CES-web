@@ -1,3 +1,4 @@
+# coding=utf-8
 from django.contrib import admin
 from django.utils import timezone
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
@@ -150,7 +151,7 @@ class MovimentacaoAdmin(admin.ModelAdmin):
     search_fields = ('objeto__nome', 'usuario__nome', 'objeto__tipoObjeto__nome')
     ordering = ('objeto__nome',)
 
-     actions = ['confirmar_retirada', 'confirmar_devolucao']
+    actions = ['confirmar_retirada', 'confirmar_devolucao']
 
     def confirmar_retirada(self, request, queryset):
         queryset.update(status='2', retirada=timezone.now)

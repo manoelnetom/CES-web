@@ -1,20 +1,16 @@
-{% extends "ces/base_reserva.html" %} {% block titlepage %}
-<header class="page-heading">
-  <div class="container">
-    <h1>
-      Detalhes da Reserva
-    </h1>
-  </div>
-</header>
-{% endblock %}
+{% extends "ces/base_reserva.html" %}
+
+{% block title %} {{ objeto }} | {{ block.super }} {% endblock %}
+
 {% block area %} 
+<div class="col-lg-9">
  <div class="thumbnail">
-        <i class="{{objeto.tipoObjeto.icone}}"></i>
-        <div class="caption">
-            <h4 class="pull-right">{{objeto.status}}</h4>
-            <h4>{{ objeto.codigo }}</h4>
-            <p>{{ objeto.nome }}</p>
-        </div>
+    {{ objeto.tipoObjeto.icone.as_html}}
+    <div class="caption">
+        <h4 class="pull-right">{{objeto.status}}</h4>
+        <h4>{{ objeto.codigo }}</h4>
+        <p>{{ objeto.nome }}</p>
+    </div>
 </div>
   <form id="item_reserva_form" action="{% url 'reserva_new' objeto.id %}" method="post" class="form" role="form">{% csrf_token %}  
     <div class='row' >
@@ -37,4 +33,5 @@
           }
           $('#item_reserva_form').ajaxForm(form_options);
   </script>
+  </div>
  {% endblock %} 

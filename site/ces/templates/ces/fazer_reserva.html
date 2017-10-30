@@ -1,18 +1,14 @@
-{% extends "ces/base_reserva.html" %} {% block titlepage %}
-<header class="page-heading">
-  <div class="container">
-    <h1>
-      Fazer reserva
-    </h1>
-  </div>
-</header>
-{% endblock %}
+{% extends "ces/base_reserva.html" %} 
+
+{% block title %} Fazer Reserva | {{ block.super }} {% endblock %}
+
 {% block area %}
+<div class="col-lg-9">
 {% if objeto_list %}
 {% for objeto in objeto_list %}
 <div class="col-sm-4 col-lg-4 col-md-4">
     <div class="thumbnail">
-        <i class="{{objeto.tipoObjeto.icone}}"></i>
+        {{objeto.tipoObjeto.icone.as_html}}
         <div class="caption">
             <h4 class="pull-right">{{objeto.status}}</h4>
             <h4><a href="{% url 'reserva_new' objeto.id %}">{{ objeto.codigo }}</a></h4>
@@ -43,5 +39,7 @@
   <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a> {% endif %}
   </span>
 </div>
+</div>
 {% endif %}
+</div>
 {% endblock %}
