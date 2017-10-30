@@ -6,19 +6,22 @@ from .models import *
 
 # para tornar models visível no portal do administrador
 
-@admin.register(Usuario)
+class MembersInline(admin.TabularInline):
+    model = MemberGrupoUsuario
+    extra = 1
+
 class UsuarioAdmin(BaseUserAdmin):
     # The forms to add and change user instances
     form = UsuarioEdicaoForm
     add_form = UsuarioNovoForm
-    
+
     fieldsets = (
         ('Informações Pessoais', {'fields': ('matricula', 'nome', 'sobrenome', 'telefone', 'email',)}),
-        ('Permissões', {'fields': ('is_admin', 'user_permissions',)}),
+        ('Permissões', {'fields': ('user_permissions',)}),
         ('Senha', {'fields': ('password',)}),
     )
-    
-    
+
+
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
     add_fieldsets = (
@@ -27,7 +30,8 @@ class UsuarioAdmin(BaseUserAdmin):
             'fields': ('matricula', 'email', 'nome', 'sobrenome', 'password1', 'password2',)}
         ),
     )
-    
+
+    inlines = (MembersInline,)
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
@@ -41,11 +45,11 @@ class UsuarioAdmin(BaseUserAdmin):
 class FuncionarioAdmin(UsuarioAdmin):
     fieldsets = (
         ('Informações Pessoais', {'fields': ('matricula', 'nome', 'sobrenome', 'telefone', 'email', 'setor',)}),
-        ('Permissions', {'fields': ('is_admin',)}),
+        ('Permissions', {'fields': ('user_permissions',)}),
         ('Senha', {'fields': ('password',)}),
     )
-    
-    
+
+
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a us
     add_fieldsets = (
@@ -54,7 +58,7 @@ class FuncionarioAdmin(UsuarioAdmin):
             'fields': ('matricula', 'email','nome', 'sobrenome', 'password1', 'password2', 'setor',)}
         ),
     )
-    
+
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
@@ -67,11 +71,11 @@ class FuncionarioAdmin(UsuarioAdmin):
 class ProfessorAdmin(UsuarioAdmin):
     fieldsets = (
         ('Informações Pessoais', {'fields': ('matricula', 'nome', 'sobrenome', 'telefone', 'email', 'departamento',)}),
-        ('Permissions', {'fields': ('is_admin',)}),
+        ('Permissions', {'fields': ('user_permissions',)}),
         ('Senha', {'fields': ('password',)}),
     )
-    
-    
+
+
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
     add_fieldsets = (
@@ -80,7 +84,7 @@ class ProfessorAdmin(UsuarioAdmin):
             'fields': ('matricula', 'email','nome', 'sobrenome', 'password1', 'password2', 'departamento',)}
         ),
     )
-    
+
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
@@ -92,19 +96,63 @@ class ProfessorAdmin(UsuarioAdmin):
 @admin.register(Aluno)
 class AlunoAdmin(UsuarioAdmin):
     pass
- 
- 
-admin.site.register(TipoObjeto)
 
-admin.site.register(Objeto)
 
-admin.site.register(Departamento)
+@admin.register(Setor)
+class SetorAdmin(admin.ModelAdmin):
+    list_display = ('descricao',)
+    search_fields = ('descricao',)
+    ordering = ('descricao',)
 
-admin.site.register(Setor)
 
-admin.site.register(GrupoUsuario)
+@admin.register(Departamento)
+class DepartamentoAdmin(admin.ModelAdmin):
+    list_display = ('descricao',)
+    search_fields = ('descricao',)
+    ordering = ('descricao',)
 
-admin.site.register(GrupoObjeto)
 
-admin.site.register(Movimentacao)
+@admin.register(Objeto)
+class ObjetoAdmin(admin.ModelAdmin):
+    list_display = ('codigo','nome', 'tipoObjeto')
+    list_filter = ('tipoObjeto',)
+    search_fields = ('codigo', 'nome')
+    ordering = ('nome',)
 
+
+@admin.register(TipoObjeto)
+class TipoObjetoAdmin(admin.ModelAdmin):
+   list_display = ('nome',)
+   search_fields = ('nome',)
+   ordering = ('nome',)
+
+
+@admin.register(GrupoObjeto)
+class GrupoObjetoAdmin(admin.ModelAdmin):
+   list_display = ('descricao', 'ativo','dataCriacao',)
+   search_fields = ('descricao',)
+   ordering = ('descricao',)
+
+
+@admin.register(GrupoUsuario)
+class GrupoUsuarioAdmin(admin.ModelAdmin):
+   inlines = (MembersInline,)
+   list_display = ('descricao','ativo','dataCriacao',)
+   search_fields = ('descricao',)
+   ordering = ('descricao',)
+
+
+@admin.register(Movimentacao)
+class MovimentacaoAdmin(admin.ModelAdmin):
+    list_display = ('objeto' ,'status', 'usuario')
+    list_filter = ('status',)
+    search_fields = ('objeto__nome', 'usuario__nome', 'objeto__tipoObjeto__nome')
+    ordering = ('objeto__nome',)
+
+    def confirmar_retirada(self, request, queryset):
+        queryset.update(status='2')
+    confirmar_retirada.short_description = "Marcar objeto como emprestado"
+
+    def confirmar_devolucao(self, request, queryset):
+        queryset.update(status='4')
+    confirmar_devolucao.short_description = "Marcar objeto como devolvido"

@@ -7,8 +7,7 @@ from django.views.generic import RedirectView
 urlpatterns = [
     url(r'^$', RedirectView.as_view(url='/ces/', permanent=True)),
     url(r'^ces/', include('ces.urls')),
-    url(r'^jet/', include('jet.urls', 'jet')),  # Django JET URLS
-    url(r'^jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),  # Django JET dashboard URLS
+    #url(r'^grappelli/', include('grappelli.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api_rest/', include('api_rest.urls')),
 ]

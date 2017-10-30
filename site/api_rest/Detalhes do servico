@@ -2,7 +2,6 @@
 Observações:
 - Não é necessária autenticação já que não temos tela de login funcionando com o Emile;
 - Ainda não estão funcionando as permissões (perfis de usuário e objetos que eles podem pegar);
-- Emprestar, devolve e transferir ainda não estão funcionando.
 
 -----------------------------------------------------
 Campos retornados:
@@ -15,9 +14,9 @@ Campos retornados:
                 retirada,
                 devolucao,
                 objeto_id { id, nome, tipoObjeto_id (id, nome) }
-                usuario_id { id, nome, email, senha, perfilUsuario_id (id, nome) }
+                usuario_id { id, nome, email, senha, perfilUsuario_id (id, nome), status }
 
------------------------------------------------------                
+-----------------------------------------------------
 Serviços disponíveis:
 
 - Listar todos os objetos
@@ -76,3 +75,13 @@ Passar os dados em formato JSON (movimentacao_id)
 url = transferir_objeto/
 Método POST
 Passar os dados em formato JSON (movimentacao_id, objeto_id, user_id, novo_usuario_id)
+
+-----------------------------------------------------
+
+- Filtro (movimentações)
+url = filtro_movimentacao_usuario/
+Método post
+Passar os dados em formato JSON:
+    obrigatório: usuario_id
+    opcionais: nome_objeto, data_retirada, data_devolucao, status, tipo_objeto
+Retorna uma lista de movimentacoes

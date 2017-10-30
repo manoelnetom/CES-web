@@ -1,11 +1,11 @@
-from fontawesome.fields import IconField
-
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser, PermissionsMixin, Permission
 )
+from datetime import datetime
+from fontawesome.fields import IconField
 
 
 STATUS_MOVIMENTACAO = (
@@ -24,7 +24,7 @@ STATUS_OBJETO = (
 
 
 class AbstractModel(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True, blank=False, null=False)
 
     class Meta:
         abstract = True
@@ -32,7 +32,7 @@ class AbstractModel(models.Model):
 
 class TipoObjeto(AbstractModel):
     nome = models.CharField(max_length=50, blank=False, null=False)
-    icone = IconField ()    
+    icone = IconField ()
 
     def __str__(self):
         return self.nome
@@ -45,7 +45,7 @@ class TipoObjeto(AbstractModel):
 class Objeto(AbstractModel):
     codigo = models.CharField(unique=True, max_length=50, blank=False, null=False)
     nome = models.CharField(unique=True, max_length=50, blank=False, null=False)
-    tipoObjeto = models.ForeignKey(TipoObjeto)
+    tipoObjeto = models.ForeignKey(TipoObjeto, verbose_name="Tipo de Objeto",)
     status = models.IntegerField(choices=STATUS_OBJETO, default=1)
 
     def __str__(self):
@@ -54,7 +54,7 @@ class Objeto(AbstractModel):
     class Meta:
         verbose_name = "Objeto"
         verbose_name_plural = "Objetos"
-        
+
 
 class GrupoObjeto(models.Model):
     descricao = models.CharField(max_length=50, unique=True, blank=False)
@@ -121,8 +121,26 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return '%s' % self.nome
 
+
+class GrupoUsuario(AbstractModel):
+    descricao = models.CharField(max_length=50, unique=True, blank=False)
+    usuarios = models.ManyToManyField(settings.AUTH_USER_MODEL, through='MemberGrupoUsuario')
+    acessos = models.ManyToManyField(GrupoObjeto)
+    dataCriacao = models.DateTimeField(auto_now_add=True)
+    ativo = models.BooleanField(default=True)
+
     def __str__(self):
-        return self.get_full_name()
+        return self.descricao
+
+    class Meta:
+        verbose_name = "Grupo de usuários"
+        verbose_name_plural = "Grupos de usuários"
+
+
+class MemberGrupoUsuario (models.Model):
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    grupo = models.ForeignKey(GrupoUsuario, on_delete=models.CASCADE)
+    date_joined = models.DateTimeField(auto_now_add=True)
 
 
 class Aluno(Usuario):
@@ -199,30 +217,15 @@ class Funcionario(Usuario):
           permissions = Permission.objects.filter(content_type__app_label='ces'
                        ).exclude(content_type__model='movimentacao',
                        codename__contains='delete')
-        else :          
+        else :
           permissions = Permission.objects.filter(content_type__model='movimentacao'
               ).exclude(codename__contains='delete'
               ).exclude(codename__contains='see_details'
               ).exclude(codename__contains='can_mark')
-          
+
         self.user_permissions.set(permissions)
 
         super(Funcionario, self).save(*args, **kwargs)
-
-
-class GrupoUsuario(AbstractModel):
-    descricao = models.CharField(max_length=50, unique=True, blank=False)
-    usuarios = models.ManyToManyField(settings.AUTH_USER_MODEL)
-    acessos = models.ManyToManyField(GrupoObjeto)
-    dataCriacao = models.DateTimeField(auto_now_add=True)
-    ativo = models.BooleanField(default=True)
-
-    def __str__(self):
-        return self.descricao
-
-    class Meta:
-        verbose_name = "Grupo de usuários"
-        verbose_name_plural = "Grupos de usuários"
 
 
 class Movimentacao(AbstractModel):
@@ -233,9 +236,6 @@ class Movimentacao(AbstractModel):
     objeto = models.ForeignKey(Objeto)
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     status = models.IntegerField(choices=STATUS_MOVIMENTACAO, default=0, blank=True)
-
-    def __str__(self):
-        return str(self.id)
 
     class Meta:
         verbose_name = "Movimentação"
