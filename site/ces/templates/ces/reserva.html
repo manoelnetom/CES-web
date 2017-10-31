@@ -1,11 +1,17 @@
 {% extends "ces/base_reserva.html" %}
 
+{% load utils %}
+
 {% block title %} {{ objeto }} | {{ block.super }} {% endblock %}
 
 {% block breadcrumb %} {{ block.super }} / 
 <a href="{% url 'reserva_new' objeto.id %}">Detalhes &rsaquo; {{objeto.nome}}</a> 
 {% endblock %}
 
+{% block extrastyle %}
+{{ block.super }}
+<link  rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css">
+{% endblock %}
 
 {% block area %}
  <div class="thumbnail">
@@ -20,22 +26,33 @@
     <div class='row' >
        {% for field in form %}
          <div class="col-sm-6 col-lg-6 col-md-6">
-             {% include 'ces/form_field.html' %}
+            <div class="form-group {% if field.errors %}has-error{% endif %}">
+                <label for="{{ field.id_for_label }}" class="col-sm-3 control-label">{{ field.label }}</label>
+                <div class="col-sm-9 ">
+                    {{ field|add_class:'form-control calendar' }} {% if field.errors %}
+                    <span class='text-danger'>{{ field.errors|join:'<br />' }}</span> {% endif %} {% if field.help_text %}
+                    <span class="help-block ">{{ field.help_text }}</span> {% endif %}
+                </div>
+            </div>
          </div>
       {% endfor %}
     </div>
     <div class='row' style="margin-top: 15px; margin-left:6px" >
      <button type="submit" class="btn btn-success">Reservar</button>
-     <input type=button class="btn .btn-default" value="Voltar" onClick="javascript:history.go(-1);">
+     <input type=button class="btn btn-default" value="Voltar" onClick="javascript:history.go(-1);">
     </div>
   </form>
-  <script>
-      /*eslint-env jquery */
-      jQuery('.modal-content .calendar').datepicker({ dateFormat: "yy-mm-dd" });
-          var form_options = {
-              target: '#modal',
-              success: function() {  }
-          }
-          $('#item_reserva_form').ajaxForm(form_options);
-  </script>
  {% endblock %}
+
+{% block extrajs %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+<script>
+    /*eslint-env jquery */
+    jQuery('.calendar').datepicker({ dateFormat: "yy-mm-dd" });
+    var form_options = {
+        target: '#modal',
+        success: function () { }
+    }
+
+</script>
+{% endblock %}
