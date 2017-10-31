@@ -2,6 +2,11 @@
 
 {% block title %} {{ objeto }} | {{ block.super }} {% endblock %}
 
+{% block breadcrumb %} {{ block.super }} / 
+<a href="{% url 'reserva_new' objeto.id %}">Detalhes &rsaquo; {{objeto.name}}</a> 
+{{% endblock %}
+
+
 {% block area %}
  <div class="thumbnail">
     {{ objeto.tipoObjeto.icone.as_html}}
