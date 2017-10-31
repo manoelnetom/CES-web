@@ -3,7 +3,7 @@
 {% block title %} {{ objeto }} | {{ block.super }} {% endblock %}
 
 {% block breadcrumb %} {{ block.super }} / 
-<a href="{% url 'reserva_new' objeto.id %}">Detalhes &rsaquo; {{objeto.name}}</a> 
+<a href="{% url 'reserva_new' objeto.id %}">Detalhes &rsaquo; {{objeto.nome}}</a> 
 {{% endblock %}
 
 
