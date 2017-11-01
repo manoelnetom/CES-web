@@ -25,7 +25,7 @@ class MovimentacaoSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Movimentacao
         fields = ('id', 'retirada', 'devolucao', 'reserva', 'objeto_id', 'usuario_id', 'status')
-        depth = 1
+        depth = 2
 
 
 class TransferenciaSerializer(serializers.ModelSerializer):
